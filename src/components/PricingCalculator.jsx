@@ -54,6 +54,18 @@ const PROVIDERS = {
         { id: 'resemble', name: 'Resemble.ai', costPerVoice: 100 },
         { id: 'elevenlabs', name: 'ElevenLabs Voice Lab', costPerVoice: 200 },
         { id: 'descript', name: 'Descript', costPerVoice: 150 }
+    ],
+    rtc: [
+        { id: 'agora-audio', name: 'Audio minute', costPer1kMinutes: 0.99 },
+        { id: 'agora-hd', name: 'Video HD', costPer1kMinutes: 3.99 },
+        { id: 'agora-fullhd', name: 'Video Full HD', costPer1kMinutes: 8.99 },
+        { id: 'agora-2k', name: 'Video 2K', costPer1kMinutes: 15.99 },
+        { id: 'agora-2k-plus', name: 'Video 2K+', costPer1kMinutes: 35.99 },
+        { id: 'agora-broadcast-audio', name: 'Broadcast Streaming Audience Audio', costPer1kMinutes: 0.59 },
+        { id: 'agora-broadcast-hd', name: 'Broadcast Streaming Audience Video HD', costPer1kMinutes: 1.99 },
+        { id: 'agora-broadcast-fullhd', name: 'Broadcast Streaming Audience Video Full HD', costPer1kMinutes: 4.59 },
+        { id: 'agora-broadcast-2k', name: 'Broadcast Streaming Audience Video 2K', costPer1kMinutes: 7.99 },
+        { id: 'agora-broadcast-2k-plus', name: 'Broadcast Streaming Audience Video 2K+', costPer1kMinutes: 17.99 }
     ]
 };
 
@@ -67,7 +79,8 @@ const PricingCalculator = () => {
         llm_output: { provider: '', tokens: 9256 },
         tts: { provider: '', characters: 30082 },
         ai_avatar: { provider: '', minutes: 60 },
-        voice_cloning: { provider: '', voices: 5 }
+        voice_cloning: { provider: '', voices: 5 },
+        rtc: { provider: '', minutes: 1000 }
     });
 
     const handleInputChange = (tab, field, value) => {
@@ -87,7 +100,7 @@ const PricingCalculator = () => {
 
     const getAllTabData = () => {
         const allData = [];
-        const tabs = ['conversational_ai', 'asr', 'llm_input', 'llm_output', 'tts', 'ai_avatar', 'voice_cloning'];
+        const tabs = ['conversational_ai', 'asr', 'llm_input', 'llm_output', 'tts', 'ai_avatar', 'voice_cloning', 'rtc'];
         const tabNames = {
             'conversational_ai': 'Conversational AI Engine',
             'asr': 'ASR',
@@ -95,7 +108,8 @@ const PricingCalculator = () => {
             'llm_output': 'LLM Output',
             'tts': 'TTS',
             'ai_avatar': 'AI-Avatar',
-            'voice_cloning': 'Voice Cloning'
+            'voice_cloning': 'Voice Cloning',
+            'rtc': 'RTC'
         };
 
         tabs.forEach(tab => {
@@ -141,6 +155,16 @@ const PricingCalculator = () => {
                         usage = tabFormData.voices;
                         unit = 'voices';
                         break;
+                    case 'rtc':
+                        cost = (tabFormData.minutes / 1000) * provider.costPer1kMinutes;
+                        usage = tabFormData.minutes;
+                        unit = 'minutes';
+                        break;
+                    case 'rtc':
+                        cost = (tabFormData.minutes / 1000) * provider.costPer1kMinutes;
+                        usage = tabFormData.minutes;
+                        unit = 'minutes';
+                        break;
                 }
 
                 allData.push({
@@ -174,8 +198,8 @@ const PricingCalculator = () => {
 
         calculatedData.allData.forEach(item => {
             const unitCost = item.usage > 0 ? (item.cost / item.usage).toFixed(6) : '0';
-            const unitCostDisplay = item.unit === 'tokens' || item.unit === 'characters' 
-                ? `$${(parseFloat(unitCost) * 1000).toFixed(6)}/${item.unit}`
+            const unitCostDisplay = item.unit === 'tokens' || item.unit === 'characters' || (item.unit === 'minutes' && item.name === 'RTC')
+                ? `$${(parseFloat(unitCost) * 1000).toFixed(6)}/1k ${item.unit}`
                 : `$${unitCost}/${item.unit}`;
 
             exportData.push([
@@ -188,7 +212,7 @@ const PricingCalculator = () => {
         });
 
         const missingServices = [];
-        const tabs = ['conversational_ai', 'asr', 'llm_input', 'llm_output', 'tts', 'ai_avatar', 'voice_cloning'];
+        const tabs = ['conversational_ai', 'asr', 'llm_input', 'llm_output', 'tts', 'ai_avatar', 'voice_cloning', 'rtc'];
         const tabNames = {
             'conversational_ai': 'Conversational AI Engine',
             'asr': 'ASR',
@@ -196,7 +220,8 @@ const PricingCalculator = () => {
             'llm_output': 'LLM Output',
             'tts': 'TTS',
             'ai_avatar': 'AI-Avatar',
-            'voice_cloning': 'Voice Cloning'
+            'voice_cloning': 'Voice Cloning',
+            'rtc': 'RTC'
         };
 
         tabs.forEach(tab => {
@@ -227,7 +252,7 @@ const PricingCalculator = () => {
     const renderDetailedBreakdown = () => {
         if (!showDetailedBreakdown) return null;
 
-        const tabs = ['asr', 'llm_input', 'llm_output', 'tts', 'ai_avatar', 'voice_cloning'];
+        const tabs = ['asr', 'llm_input', 'llm_output', 'tts', 'ai_avatar', 'voice_cloning', 'rtc'];
         const tabNames = {
             'conversational_ai': 'Conversational AI Engine',
             'asr': 'ASR',
@@ -235,7 +260,8 @@ const PricingCalculator = () => {
             'llm_output': 'LLM Output',
             'tts': 'TTS',
             'ai_avatar': 'AI-Avatar',
-            'voice_cloning': 'Voice Cloning'
+            'voice_cloning': 'Voice Cloning',
+            'rtc': 'RTC'
         };
 
         const allTabsStatus = tabs.map(tab => {
@@ -281,6 +307,11 @@ const PricingCalculator = () => {
                         usage = tabFormData.voices;
                         unit = 'voices';
                         break;
+                    case 'rtc':
+                        cost = (tabFormData.minutes / 1000) * provider.costPer1kMinutes;
+                        usage = tabFormData.minutes;
+                        unit = 'minutes';
+                        break;
                 }
 
                 return {
@@ -316,8 +347,8 @@ const PricingCalculator = () => {
                                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '0.875rem', color: 'var(--neutral-600)' }}>
                                     <li style={{ marginBottom: '0.25rem' }}>• Provider: {item.provider}</li>
                                     <li style={{ marginBottom: '0.25rem' }}>• Usage: {item.usage.toLocaleString()} {item.unit}</li>
-                                    <li style={{ marginBottom: '0.25rem' }}>• Cost per {item.unit === 'tokens' || item.unit === 'characters' ? '1k ' + item.unit : item.unit}: ${
-                                        item.unit === 'tokens' || item.unit === 'characters' 
+                                    <li style={{ marginBottom: '0.25rem' }}>• Cost per {item.unit === 'tokens' || item.unit === 'characters' || (item.unit === 'minutes' && item.name === 'RTC') ? '1k ' + item.unit : item.unit}: ${
+                                        item.unit === 'tokens' || item.unit === 'characters' || (item.unit === 'minutes' && item.name === 'RTC')
                                             ? ((item.cost / item.usage) * 1000).toFixed(6)
                                             : (item.cost / item.usage).toFixed(6)
                                     }</li>
@@ -574,6 +605,37 @@ const PricingCalculator = () => {
                         </div>
                     </div>
                 );
+            case 'rtc':
+                return (
+                    <div className="tab-content active">
+                        <div className="form-group">
+                            <label htmlFor="rtc-provider">RTC Provider</label>
+                            <select 
+                                id="rtc-provider"
+                                value={formData.rtc.provider}
+                                onChange={(e) => handleInputChange('rtc', 'provider', e.target.value)}
+                            >
+                                <option value="">Select RTC Provider</option>
+                                {PROVIDERS.rtc.map(provider => (
+                                    <option key={provider.id} value={provider.id}>
+                                        {provider.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="rtc-minutes">Minutes per month</label>
+                            <input
+                                id="rtc-minutes"
+                                type="number"
+                                min="0"
+                                placeholder="e.g., 10000"
+                                value={formData.rtc.minutes}
+                                onChange={(e) => handleInputChange('rtc', 'minutes', Number(e.target.value))}
+                            />
+                        </div>
+                    </div>
+                );
             default:
                 return null;
         }
@@ -613,7 +675,8 @@ const PricingCalculator = () => {
                                 { key: 'llm_output', label: 'LLM Output' },
                                 { key: 'tts', label: 'TTS' },
                                 { key: 'ai_avatar', label: 'AI-Avatar' },
-                                { key: 'voice_cloning', label: 'Voice Cloning' }
+                                { key: 'voice_cloning', label: 'Voice Cloning' },
+                                { key: 'rtc', label: 'RTC' }
                             ].map(tab => (
                                 <button
                                     key={tab.key}
