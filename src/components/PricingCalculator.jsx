@@ -367,8 +367,7 @@ const PricingCalculator = () => {
     const [formData, setFormData] = useState({
         conversational_ai: { provider: '', model: '', minutes: 60 },
         asr: { provider: '', model: '', minutes: 60 },
-        llm_input: { provider: '', model: '', tokens: 4628 },
-        llm_output: { provider: '', model: '', tokens: 9256 },
+        llm: { provider: '', model: '', inputTokens: 4628, outputTokens: 9256 },
         tts: { provider: '', model: '', characters: 30082 },
         ai_avatar: { provider: '', model: '', minutes: 60 },
         rtc: { provider: '', minutes: 1000 }
@@ -391,22 +390,21 @@ const PricingCalculator = () => {
 
     const getAllTabData = () => {
         const allData = [];
-        const tabs = ['conversational_ai', 'asr', 'llm_input', 'llm_output', 'tts', 'ai_avatar', 'rtc'];
+        const tabs = ['conversational_ai', 'asr', 'llm', 'tts', 'ai_avatar', 'rtc'];
         const tabNames = {
-            'conversational_ai': 'Conversational AI Engine',
+            'conversational_ai': 'AI_Engine',
             'asr': 'ASR',
-            'llm_input': 'LLM Input',
-            'llm_output': 'LLM Output',
+            'llm': 'LLM',
             'tts': 'TTS',
-            'ai_avatar': 'AI-Avatar',
+            'ai_avatar': 'AI_Avatar',
             'rtc': 'RTC'
         };
 
         tabs.forEach(tab => {
             const tabFormData = formData[tab];
             const hasProvider = tabFormData.provider !== '';
-            const hasModel = tabFormData.model !== '';
-            const hasUsage = tabFormData.minutes > 0 || tabFormData.tokens > 0 || tabFormData.characters > 0;
+            const hasModel = tab === 'rtc' || tabFormData.model !== '';
+            const hasUsage = tabFormData.minutes > 0 || tabFormData.inputTokens > 0 || tabFormData.outputTokens > 0 || tabFormData.characters > 0;
             
             if (hasProvider && hasModel && hasUsage) {
                 let cost = 0;
@@ -441,14 +439,11 @@ const PricingCalculator = () => {
                                     usage = tabFormData.minutes;
                                     unit = 'minutes';
                                     break;
-                                case 'llm_input':
-                                    cost = (tabFormData.tokens / 1000000) * model.inputPrice;
-                                    usage = tabFormData.tokens;
-                                    unit = 'tokens';
-                                    break;
-                                case 'llm_output':
-                                    cost = (tabFormData.tokens / 1000000) * model.outputPrice;
-                                    usage = tabFormData.tokens;
+                                case 'llm':
+                                    const inputCost = (tabFormData.inputTokens / 1000000) * model.inputPrice;
+                                    const outputCost = (tabFormData.outputTokens / 1000000) * model.outputPrice;
+                                    cost = inputCost + outputCost;
+                                    usage = tabFormData.inputTokens + tabFormData.outputTokens;
                                     unit = 'tokens';
                                     break;
                                 case 'tts':
@@ -512,14 +507,13 @@ const PricingCalculator = () => {
         });
 
         const missingServices = [];
-        const tabs = ['conversational_ai', 'asr', 'llm_input', 'llm_output', 'tts', 'ai_avatar', 'rtc'];
+        const tabs = ['conversational_ai', 'asr', 'llm', 'tts', 'ai_avatar', 'rtc'];
         const tabNames = {
-            'conversational_ai': 'Conversational AI Engine',
+            'conversational_ai': 'AI_Engine',
             'asr': 'ASR',
-            'llm_input': 'LLM Input',
-            'llm_output': 'LLM Output',
+            'llm': 'LLM',
             'tts': 'TTS',
-            'ai_avatar': 'AI-Avatar',
+            'ai_avatar': 'AI_Avatar',
             'rtc': 'RTC'
         };
 
@@ -527,7 +521,7 @@ const PricingCalculator = () => {
             const tabFormData = formData[tab];
             const hasProvider = tabFormData.provider !== '';
             const hasModel = tab === 'rtc' || tabFormData.model !== '';
-            const hasUsage = tabFormData.minutes > 0 || tabFormData.tokens > 0 || tabFormData.characters > 0;
+            const hasUsage = tabFormData.minutes > 0 || tabFormData.inputTokens > 0 || tabFormData.outputTokens > 0 || tabFormData.characters > 0;
             
             if (!hasProvider || !hasModel || !hasUsage) {
                 missingServices.push(tabNames[tab]);
@@ -552,14 +546,13 @@ const PricingCalculator = () => {
     const renderDetailedBreakdown = () => {
         if (!showDetailedBreakdown) return null;
 
-        const tabs = ['conversational_ai', 'asr', 'llm_input', 'llm_output', 'tts', 'ai_avatar', 'rtc'];
+        const tabs = ['conversational_ai', 'asr', 'llm', 'tts', 'ai_avatar', 'rtc'];
         const tabNames = {
-            'conversational_ai': 'Conversational AI Engine',
+            'conversational_ai': 'AI_Engine',
             'asr': 'ASR',
-            'llm_input': 'LLM Input',
-            'llm_output': 'LLM Output',
+            'llm': 'LLM',
             'tts': 'TTS',
-            'ai_avatar': 'AI-Avatar',
+            'ai_avatar': 'AI_Avatar',
             'rtc': 'RTC'
         };
 
@@ -567,7 +560,7 @@ const PricingCalculator = () => {
             const tabFormData = formData[tab];
             const hasProvider = tabFormData.provider !== '';
             const hasModel = tab === 'rtc' || tabFormData.model !== '';
-            const hasUsage = tabFormData.minutes > 0 || tabFormData.tokens > 0 || tabFormData.characters > 0;
+            const hasUsage = tabFormData.minutes > 0 || tabFormData.inputTokens > 0 || tabFormData.outputTokens > 0 || tabFormData.characters > 0;
             
             if (hasProvider && hasModel && hasUsage) {
                 let cost = 0;
@@ -602,14 +595,11 @@ const PricingCalculator = () => {
                                     usage = tabFormData.minutes;
                                     unit = 'minutes';
                                     break;
-                                case 'llm_input':
-                                    cost = (tabFormData.tokens / 1000000) * model.inputPrice;
-                                    usage = tabFormData.tokens;
-                                    unit = 'tokens';
-                                    break;
-                                case 'llm_output':
-                                    cost = (tabFormData.tokens / 1000000) * model.outputPrice;
-                                    usage = tabFormData.tokens;
+                                case 'llm':
+                                    const inputCost = (tabFormData.inputTokens / 1000000) * model.inputPrice;
+                                    const outputCost = (tabFormData.outputTokens / 1000000) * model.outputPrice;
+                                    cost = inputCost + outputCost;
+                                    usage = tabFormData.inputTokens + tabFormData.outputTokens;
                                     unit = 'tokens';
                                     break;
                                 case 'tts':
@@ -838,14 +828,14 @@ const PricingCalculator = () => {
                         </div>
                     </div>
                 );
-            case 'llm_input':
+            case 'llm':
                 return (
                     <div className="tab-content active">
                         <div className="form-group">
                             <label>Provider</label>
                             <select 
-                                value={formData.llm_input.provider}
-                                onChange={(e) => handleProviderChange('llm_input', e.target.value)}
+                                value={formData.llm.provider}
+                                onChange={(e) => handleProviderChange('llm', e.target.value)}
                             >
                                 <option value="">Select Provider</option>
                                 {PROVIDERS.llm.providers.map(provider => (
@@ -858,108 +848,63 @@ const PricingCalculator = () => {
                         <div className="form-group">
                             <label>Model</label>
                             <select 
-                                value={formData.llm_input.model}
-                                onChange={(e) => handleInputChange('llm_input', 'model', e.target.value)}
-                                disabled={!formData.llm_input.provider}
+                                value={formData.llm.model}
+                                onChange={(e) => handleInputChange('llm', 'model', e.target.value)}
+                                disabled={!formData.llm.provider}
                             >
                                 <option value="">Select Model</option>
-                                {formData.llm_input.provider && PROVIDERS.llm.providers
-                                    .find(p => p.id === formData.llm_input.provider)?.models.map(model => (
+                                {formData.llm.provider && PROVIDERS.llm.providers
+                                    .find(p => p.id === formData.llm.provider)?.models.map(model => (
                                         <option key={model.id} value={model.id}>
                                             {model.name}
                                         </option>
                                     ))}
                             </select>
                         </div>
-                        {formData.llm_input.model && (
+                        {formData.llm.model && (
                             <>
                                 <div className="form-group">
                                     <label>Pricing Unit</label>
                                     <div className="pricing-unit-display">
-                                        {getSelectedModel('llm_input')?.pricingUnit}
+                                        {getSelectedModel('llm')?.pricingUnit}
                                     </div>
                                 </div>
-                                <div className="form-group">
-                                    <label>Unit Price (USD)</label>
-                                    <div className="unit-price-display">
-                                        Input: ${getSelectedModel('llm_input')?.inputPrice?.toFixed(2)}<br />
-                                        Output: ${getSelectedModel('llm_input')?.outputPrice?.toFixed(2)}
+                                <div className="llm-price-container">
+                                    <div className="form-group">
+                                        <label>Input Unit Price (USD)</label>
+                                        <div className="unit-price-display">
+                                            ${getSelectedModel('llm')?.inputPrice?.toFixed(2)}
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Output Unit Price (USD)</label>
+                                        <div className="unit-price-display">
+                                            ${getSelectedModel('llm')?.outputPrice?.toFixed(2)}
+                                        </div>
                                     </div>
                                 </div>
                             </>
                         )}
                         <div className="form-group">
-                            <label htmlFor="llm-input-tokens">Tokens per month</label>
+                            <label htmlFor="llm-input-tokens">Input Tokens per month</label>
                             <input
                                 id="llm-input-tokens"
                                 type="number"
                                 min="0"
                                 placeholder="e.g., 5000000"
-                                value={formData.llm_input.tokens}
-                                onChange={(e) => handleInputChange('llm_input', 'tokens', Number(e.target.value))}
+                                value={formData.llm.inputTokens}
+                                onChange={(e) => handleInputChange('llm', 'inputTokens', Number(e.target.value))}
                             />
                         </div>
-                    </div>
-                );
-            case 'llm_output':
-                return (
-                    <div className="tab-content active">
                         <div className="form-group">
-                            <label>Provider</label>
-                            <select 
-                                value={formData.llm_output.provider}
-                                onChange={(e) => handleProviderChange('llm_output', e.target.value)}
-                            >
-                                <option value="">Select Provider</option>
-                                {PROVIDERS.llm.providers.map(provider => (
-                                    <option key={provider.id} value={provider.id}>
-                                        {provider.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="form-group">
-                            <label>Model</label>
-                            <select 
-                                value={formData.llm_output.model}
-                                onChange={(e) => handleInputChange('llm_output', 'model', e.target.value)}
-                                disabled={!formData.llm_output.provider}
-                            >
-                                <option value="">Select Model</option>
-                                {formData.llm_output.provider && PROVIDERS.llm.providers
-                                    .find(p => p.id === formData.llm_output.provider)?.models.map(model => (
-                                        <option key={model.id} value={model.id}>
-                                            {model.name}
-                                        </option>
-                                    ))}
-                            </select>
-                        </div>
-                        {formData.llm_output.model && (
-                            <>
-                                <div className="form-group">
-                                    <label>Pricing Unit</label>
-                                    <div className="pricing-unit-display">
-                                        {getSelectedModel('llm_output')?.pricingUnit}
-                                    </div>
-                                </div>
-                                <div className="form-group">
-                                    <label>Unit Price (USD)</label>
-                                    <div className="unit-price-display">
-                                        Input: ${getSelectedModel('llm_output')?.inputPrice?.toFixed(2)}<br />
-                                        Output: ${getSelectedModel('llm_output')?.outputPrice?.toFixed(2)}
-                                    </div>
-                                </div>
-                            </>
-                        )}
-                        <div className="form-group">
-                            <label htmlFor="llm-output-tokens">Tokens per month</label>
+                            <label htmlFor="llm-output-tokens">Output Tokens per month</label>
                             <input
                                 id="llm-output-tokens"
                                 type="number"
                                 min="0"
                                 placeholder="e.g., 5000000"
-                                value={formData.llm_output.tokens}
-                                onChange={(e) => handleInputChange('llm_output', 'tokens', Number(e.target.value))}
+                                value={formData.llm.outputTokens}
+                                onChange={(e) => handleInputChange('llm', 'outputTokens', Number(e.target.value))}
                             />
                         </div>
                     </div>
@@ -1152,13 +1097,11 @@ const PricingCalculator = () => {
                     <div className="tabs-section">
                         <div className="tabs">
                             {[
-                                { key: 'conversational_ai', label: 'Conversational AI' },
+                                { key: 'conversational_ai', label: 'AI_Engine' },
                                 { key: 'asr', label: 'ASR' },
-                                { key: 'llm_input', label: 'LLM Input' },
-                                { key: 'llm_output', label: 'LLM Output' },
+                                { key: 'llm', label: 'LLM' },
                                 { key: 'tts', label: 'TTS' },
-                                { key: 'ai_avatar', label: 'AI-Avatar' },
-                                { key: 'voice_cloning', label: 'Voice Cloning' },
+                                { key: 'ai_avatar', label: 'AI_Avatar' },
                                 { key: 'rtc', label: 'RTC' }
                             ].map(tab => (
                                 <button
