@@ -14,47 +14,339 @@ const COLORS = [
 ];
 
 const PROVIDERS = {
-    conversational_ai: [
-        { id: 'byok', name: 'Audio Basic Task (BYOK)', costPerMinute: 0.0099 },
-        { id: 'byok-ares', name: 'Audio Basic Task + ARES ASR', costPerMinute: 0.0265 }
-    ],
-    asr: [
-        { id: 'ares', name: 'ARES ASR Task', costPerMinute: 0.0166 },
-        { id: 'deepgram', name: 'Deepgram Nova-2', costPerMinute: 0.0225 },
-        { id: 'google', name: 'Google Cloud Speech-to-Text', costPerMinute: 0.006 },
-        { id: 'aws', name: 'AWS Transcribe', costPerMinute: 0.015 }
-    ],
-    llm_input: [
-        { id: 'gpt4-turbo', name: 'GPT-4 Turbo (OpenAI)', costPer1kTokens: 0.01 },
-        { id: 'anthropic-claude', name: 'Anthropic Claude', costPer1kTokens: 0.01 },
-        { id: 'openai', name: 'OpenAI GPT-4', costPer1kTokens: 0.03 },
-        { id: 'google', name: 'Google Gemini Pro', costPer1kTokens: 0.00125 },
-        { id: 'anthropic', name: 'Anthropic Claude 3', costPer1kTokens: 0.015 }
-    ],
-    llm_output: [
-        { id: 'gpt4-turbo', name: 'GPT-4 Turbo (OpenAI)', costPer1kTokens: 0.03 },
-        { id: 'anthropic-claude', name: 'Anthropic Claude', costPer1kTokens: 0.03 },
-        { id: 'openai', name: 'OpenAI GPT-4', costPer1kTokens: 0.06 },
-        { id: 'google', name: 'Google Gemini Pro', costPer1kTokens: 0.005 },
-        { id: 'anthropic', name: 'Anthropic Claude 3', costPer1kTokens: 0.075 }
-    ],
-    tts: [
-        { id: 'openai-tts', name: 'OpenAI TTS - Standard Neural', costPer1kChars: 0.016 },
-        { id: 'elevenlabs', name: 'ElevenLabs', costPer1kChars: 0.24 },
-        { id: 'google', name: 'Google Cloud Text-to-Speech', costPer1kChars: 0.016 },
-        { id: 'aws', name: 'Amazon Polly', costPer1kChars: 0.004 }
-    ],
-    ai_avatar: [
-        { id: 'akool', name: 'Akool - Standard Avatar', costPerMinute: 0.05 },
-        { id: 'synthesia', name: 'Synthesia', costPerMinute: 0.15 },
-        { id: 'hourone', name: 'Hour One', costPerMinute: 0.20 },
-        { id: 'did', name: 'D-ID', costPerMinute: 0.25 }
-    ],
-    voice_cloning: [
-        { id: 'resemble', name: 'Resemble.ai', costPerVoice: 100 },
-        { id: 'elevenlabs', name: 'ElevenLabs Voice Lab', costPerVoice: 200 },
-        { id: 'descript', name: 'Descript', costPerVoice: 150 }
-    ],
+    conversational_ai: {
+        providers: [
+            {
+                id: 'byok',
+                name: 'BYOK',
+                models: [
+                    {
+                        id: 'default',
+                        name: 'Default',
+                        pricingUnit: 'per minute',
+                        unitPrice: 0.01089,
+                        notes: 'BYOK (Bring Your Own Key)\nWhat\'s included: Audio RTC (user) + Conversational AI Engine Audio Basic Task\nTotal per min = 0.00099 + 0.0099 = 0.01089 USD/min'
+                    }
+                ]
+            },
+            {
+                id: 'byok-avatar',
+                name: 'BYOK + AI Avatar (720p video)',
+                models: [
+                    {
+                        id: 'default',
+                        name: 'Default',
+                        pricingUnit: 'per minute',
+                        unitPrice: 0.01488,
+                        notes: 'BYOK + AI Avatar (720p video)\nWhat\'s included:\nVideo HD RTC for user: 0.00399\nAudio RTC for avatar: 0.00099\nConversational AI Engine Audio Basic Task: 0.0099\nTotal per min = 0.00399 + 0.00099 + 0.0099 = 0.01488 USD/min\nAvatar vendor charges (HeyGen, Akool, etc.) billed separately via BYOK.'
+                    }
+                ]
+            }
+        ]
+    },
+    asr: {
+        providers: [
+            {
+                id: 'ares',
+                name: 'ARES(Agora)',
+                models: [
+                    {
+                        id: 'default',
+                        name: 'Default',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.0166,
+                        notes: 'Agora built-in ASR (only the ASR component cost)'
+                    }
+                ]
+            },
+            {
+                id: 'microsoft-azure',
+                name: 'Microsoft Azure ASR',
+                models: [
+                    {
+                        id: 'standard',
+                        name: 'Standard (Pay-as-you-go)',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.013,
+                        notes: 'Approx. $0.96-$0.78/hour = $0.016-$0.013 per minute'
+                    }
+                ]
+            },
+            {
+                id: 'deepgram',
+                name: 'Deepgram ASR',
+                models: [
+                    {
+                        id: 'nova-2',
+                        name: 'Nova-2 (Streaming)',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.0058,
+                        notes: 'Entry-level Nova model'
+                    },
+                    {
+                        id: 'nova-3',
+                        name: 'Nova-3 (Streaming)',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.0077,
+                        notes: 'Deepgram\'s advanced streaming model'
+                    }
+                ]
+            }
+        ]
+    },
+    llm: {
+        providers: [
+            {
+                id: 'openai',
+                name: 'OpenAI',
+                models: [
+                    {
+                        id: 'gpt-4o',
+                        name: 'GPT-4o',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 5,
+                        outputPrice: 15,
+                        notes: 'Most capable multi-modal GPT model'
+                    },
+                    {
+                        id: 'gpt-4o-mini',
+                        name: 'GPT-4o mini',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.15,
+                        outputPrice: 0.6,
+                        notes: 'Fast, low-cost GPT model'
+                    },
+                    {
+                        id: 'gpt-4-turbo',
+                        name: 'GPT-4 Turbo (1106)',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 10,
+                        outputPrice: 30,
+                        notes: 'Previous gen GPT-4 Turbo'
+                    },
+                    {
+                        id: 'gpt-3.5-turbo',
+                        name: 'GPT-3.5 Turbo (0125)',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.5,
+                        outputPrice: 1.5,
+                        notes: 'Economical GPT model'
+                    }
+                ]
+            },
+            {
+                id: 'microsoft-azure-openai',
+                name: 'Microsoft Azure OpenAI',
+                models: [
+                    {
+                        id: 'gpt-4o',
+                        name: 'GPT-4o',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 5,
+                        outputPrice: 15,
+                        notes: 'Matches OpenAI pricing; billed via Azure'
+                    },
+                    {
+                        id: 'gpt-4o-mini',
+                        name: 'GPT-4o mini',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.15,
+                        outputPrice: 0.6,
+                        notes: 'Matches OpenAI pricing'
+                    },
+                    {
+                        id: 'gpt-4-turbo',
+                        name: 'GPT-4 Turbo',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 10,
+                        outputPrice: 30,
+                        notes: 'Matches OpenAI pricing'
+                    },
+                    {
+                        id: 'gpt-3.5-turbo',
+                        name: 'GPT-3.5 Turbo',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.5,
+                        outputPrice: 1.5,
+                        notes: 'Matches OpenAI pricing'
+                    }
+                ]
+            },
+            {
+                id: 'google-gemini',
+                name: 'Google Gemini',
+                models: [
+                    {
+                        id: 'gemini-1.5-pro',
+                        name: 'Gemini 1.5 Pro',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 3.5,
+                        outputPrice: 10.5,
+                        notes: 'Long context (up to 2M tokens)'
+                    },
+                    {
+                        id: 'gemini-1.5-flash',
+                        name: 'Gemini 1.5 Flash',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.35,
+                        outputPrice: 1.05,
+                        notes: 'Lightweight, faster model'
+                    }
+                ]
+            },
+            {
+                id: 'google-vertex-ai',
+                name: 'Google Vertex AI',
+                models: [
+                    {
+                        id: 'gemini-1.5-pro',
+                        name: 'Gemini 1.5 Pro',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 3.5,
+                        outputPrice: 10.5,
+                        notes: 'Same as Google Gemini direct'
+                    },
+                    {
+                        id: 'gemini-1.5-flash',
+                        name: 'Gemini 1.5 Flash',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.35,
+                        outputPrice: 1.05,
+                        notes: 'Same as Google Gemini direct'
+                    }
+                ]
+            },
+            {
+                id: 'anthropic-claude',
+                name: 'Anthropic Claude',
+                models: [
+                    {
+                        id: 'claude-3.5-sonnet',
+                        name: 'Claude 3.5 Sonnet',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 3,
+                        outputPrice: 15,
+                        notes: 'Balanced Claude model'
+                    },
+                    {
+                        id: 'claude-3-haiku',
+                        name: 'Claude 3 Haiku',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.25,
+                        outputPrice: 1.25,
+                        notes: 'Smallest & cheapest Claude'
+                    },
+                    {
+                        id: 'claude-3-opus',
+                        name: 'Claude 3 Opus',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 15,
+                        outputPrice: 75,
+                        notes: 'Most capable Claude model'
+                    }
+                ]
+            }
+        ]
+    },
+    tts: {
+        providers: [
+            {
+                id: 'microsoft-azure',
+                name: 'Microsoft Azure Speech Services',
+                models: [
+                    {
+                        id: 'default',
+                        name: 'Default',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 16,
+                        notes: 'Standard Neural; custom voices cost more.'
+                    }
+                ]
+            },
+            {
+                id: 'elevenlabs',
+                name: 'ElevenLabs',
+                models: [
+                    {
+                        id: 'default',
+                        name: 'Default',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 150,
+                        notes: 'Starter plan; $0.15 per 1K chars.'
+                    }
+                ]
+            },
+            {
+                id: 'cartesia',
+                name: 'Cartesia',
+                models: [
+                    {
+                        id: 'default',
+                        name: 'Default',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 150,
+                        notes: 'Starter plan; 1 char = 1 credit.'
+                    }
+                ]
+            },
+            {
+                id: 'openai',
+                name: 'OpenAI TTS',
+                models: [
+                    {
+                        id: 'default',
+                        name: 'Default',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 15,
+                        notes: 'Applies to gpt-4o-mini-tts and tts-1.'
+                    }
+                ]
+            },
+            {
+                id: 'hume-ai',
+                name: 'Hume AI (Octave)',
+                models: [
+                    {
+                        id: 'default',
+                        name: 'Default',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 150,
+                        notes: 'Starter plan; voice cloning & speech-to-speech available.'
+                    }
+                ]
+            }
+        ]
+    },
+    ai_avatar: {
+        providers: [
+            {
+                id: 'akool',
+                name: 'Akool',
+                models: [
+                    {
+                        id: 'default',
+                        name: 'Default',
+                        pricingUnit: 'per minute',
+                        unitPrice: 0.05,
+                        notes: '$3 for 60 minutes (akool.com) [Standard Avatar]'
+                    }
+                ]
+            },
+            {
+                id: 'heygen',
+                name: 'HeyGen',
+                models: [
+                    {
+                        id: 'default',
+                        name: 'Default',
+                        pricingUnit: 'per minute',
+                        unitPrice: 1.00,
+                        notes: '$99/month for 100 credits (1 credit = 1 min) (heygen.com)Interactive Avatar (Pro API Plan)'
+                    }
+                ]
+            }
+        ]
+    },
     rtc: [
         { id: 'agora-audio', name: 'Audio minute', costPer1kMinutes: 0.99 },
         { id: 'agora-hd', name: 'Video HD', costPer1kMinutes: 3.99 },
@@ -73,13 +365,12 @@ const PricingCalculator = () => {
     const [activeTab, setActiveTab] = useState('conversational_ai');
     const [showDetailedBreakdown, setShowDetailedBreakdown] = useState(false);
     const [formData, setFormData] = useState({
-        conversational_ai: { provider: '', minutes: 60 },
-        asr: { provider: '', minutes: 60 },
-        llm_input: { provider: '', tokens: 4628 },
-        llm_output: { provider: '', tokens: 9256 },
-        tts: { provider: '', characters: 30082 },
-        ai_avatar: { provider: '', minutes: 60 },
-        voice_cloning: { provider: '', voices: 5 },
+        conversational_ai: { provider: '', model: '', minutes: 60 },
+        asr: { provider: '', model: '', minutes: 60 },
+        llm_input: { provider: '', model: '', tokens: 4628 },
+        llm_output: { provider: '', model: '', tokens: 9256 },
+        tts: { provider: '', model: '', characters: 30082 },
+        ai_avatar: { provider: '', model: '', minutes: 60 },
         rtc: { provider: '', minutes: 1000 }
     });
 
@@ -100,7 +391,7 @@ const PricingCalculator = () => {
 
     const getAllTabData = () => {
         const allData = [];
-        const tabs = ['conversational_ai', 'asr', 'llm_input', 'llm_output', 'tts', 'ai_avatar', 'voice_cloning', 'rtc'];
+        const tabs = ['conversational_ai', 'asr', 'llm_input', 'llm_output', 'tts', 'ai_avatar', 'rtc'];
         const tabNames = {
             'conversational_ai': 'Conversational AI Engine',
             'asr': 'ASR',
@@ -108,73 +399,78 @@ const PricingCalculator = () => {
             'llm_output': 'LLM Output',
             'tts': 'TTS',
             'ai_avatar': 'AI-Avatar',
-            'voice_cloning': 'Voice Cloning',
             'rtc': 'RTC'
         };
 
         tabs.forEach(tab => {
             const tabFormData = formData[tab];
             const hasProvider = tabFormData.provider !== '';
-            const hasUsage = tabFormData.minutes > 0 || tabFormData.tokens > 0 || tabFormData.characters > 0 || tabFormData.voices > 0;
+            const hasModel = tabFormData.model !== '';
+            const hasUsage = tabFormData.minutes > 0 || tabFormData.tokens > 0 || tabFormData.characters > 0;
             
-            if (hasProvider && hasUsage) {
-                const provider = PROVIDERS[tab].find(p => p.id === tabFormData.provider);
+            if (hasProvider && hasModel && hasUsage) {
                 let cost = 0;
                 let usage = 0;
                 let unit = '';
+                let providerName = '';
+                let modelName = '';
 
-                switch (tab) {
-                    case 'conversational_ai':
-                        cost = tabFormData.minutes * provider.costPerMinute;
-                        usage = tabFormData.minutes;
-                        unit = 'minutes';
-                        break;
-                    case 'asr':
-                        cost = tabFormData.minutes * provider.costPerMinute;
-                        usage = tabFormData.minutes;
-                        unit = 'minutes';
-                        break;
-                    case 'llm_input':
-                    case 'llm_output':
-                        cost = (tabFormData.tokens / 1000) * provider.costPer1kTokens;
-                        usage = tabFormData.tokens;
-                        unit = 'tokens';
-                        break;
-                    case 'tts':
-                        cost = (tabFormData.characters / 1000) * provider.costPer1kChars;
-                        usage = tabFormData.characters;
-                        unit = 'characters';
-                        break;
-                    case 'ai_avatar':
-                        cost = tabFormData.minutes * provider.costPerMinute;
-                        usage = tabFormData.minutes;
-                        unit = 'minutes';
-                        break;
-                    case 'voice_cloning':
-                        cost = tabFormData.voices * provider.costPerVoice;
-                        usage = tabFormData.voices;
-                        unit = 'voices';
-                        break;
-                    case 'rtc':
+                if (tab === 'rtc') {
+                    // RTC uses the old structure
+                    const provider = PROVIDERS[tab].find(p => p.id === tabFormData.provider);
+                    if (provider) {
                         cost = (tabFormData.minutes / 1000) * provider.costPer1kMinutes;
                         usage = tabFormData.minutes;
                         unit = 'minutes';
-                        break;
-                    case 'rtc':
-                        cost = (tabFormData.minutes / 1000) * provider.costPer1kMinutes;
-                        usage = tabFormData.minutes;
-                        unit = 'minutes';
-                        break;
+                        providerName = provider.name;
+                    }
+                } else {
+                    // New structure with providers and models
+                    const provider = PROVIDERS[tab]?.providers?.find(p => p.id === tabFormData.provider);
+                    if (provider) {
+                        const model = provider.models.find(m => m.id === tabFormData.model);
+                        if (model) {
+                            providerName = provider.name;
+                            modelName = model.name;
+                            
+                            switch (tab) {
+                                case 'conversational_ai':
+                                case 'asr':
+                                case 'ai_avatar':
+                                    cost = tabFormData.minutes * model.unitPrice;
+                                    usage = tabFormData.minutes;
+                                    unit = 'minutes';
+                                    break;
+                                case 'llm_input':
+                                    cost = (tabFormData.tokens / 1000000) * model.inputPrice;
+                                    usage = tabFormData.tokens;
+                                    unit = 'tokens';
+                                    break;
+                                case 'llm_output':
+                                    cost = (tabFormData.tokens / 1000000) * model.outputPrice;
+                                    usage = tabFormData.tokens;
+                                    unit = 'tokens';
+                                    break;
+                                case 'tts':
+                                    cost = (tabFormData.characters / 1000000) * model.unitPrice;
+                                    usage = tabFormData.characters;
+                                    unit = 'characters';
+                                    break;
+                            }
+                        }
+                    }
                 }
 
-                allData.push({
-                    name: tabNames[tab],
-                    cost: cost,
-                    usage: usage,
-                    provider: provider.name,
-                    unit: unit,
-                    color: COLORS[tabs.indexOf(tab) % COLORS.length]
-                });
+                if (cost > 0) {
+                    allData.push({
+                        name: tabNames[tab],
+                        cost: cost,
+                        usage: usage,
+                        provider: modelName ? `${providerName} - ${modelName}` : providerName,
+                        unit: unit,
+                        color: COLORS[tabs.indexOf(tab) % COLORS.length]
+                    });
+                }
             }
         });
 
@@ -197,10 +493,14 @@ const PricingCalculator = () => {
         ];
 
         calculatedData.allData.forEach(item => {
-            const unitCost = item.usage > 0 ? (item.cost / item.usage).toFixed(6) : '0';
-            const unitCostDisplay = item.unit === 'tokens' || item.unit === 'characters' || (item.unit === 'minutes' && item.name === 'RTC')
-                ? `$${(parseFloat(unitCost) * 1000).toFixed(6)}/1k ${item.unit}`
-                : `$${unitCost}/${item.unit}`;
+            let unitCostDisplay;
+            if (item.unit === 'tokens' || item.unit === 'characters') {
+                unitCostDisplay = `$${((item.cost / item.usage) * 1000000).toFixed(6)}/1M ${item.unit}`;
+            } else if (item.unit === 'minutes' && item.name === 'RTC') {
+                unitCostDisplay = `$${((item.cost / item.usage) * 1000).toFixed(6)}/1k ${item.unit}`;
+            } else {
+                unitCostDisplay = `$${(item.cost / item.usage).toFixed(6)}/${item.unit}`;
+            }
 
             exportData.push([
                 item.name,
@@ -212,7 +512,7 @@ const PricingCalculator = () => {
         });
 
         const missingServices = [];
-        const tabs = ['conversational_ai', 'asr', 'llm_input', 'llm_output', 'tts', 'ai_avatar', 'voice_cloning', 'rtc'];
+        const tabs = ['conversational_ai', 'asr', 'llm_input', 'llm_output', 'tts', 'ai_avatar', 'rtc'];
         const tabNames = {
             'conversational_ai': 'Conversational AI Engine',
             'asr': 'ASR',
@@ -220,16 +520,16 @@ const PricingCalculator = () => {
             'llm_output': 'LLM Output',
             'tts': 'TTS',
             'ai_avatar': 'AI-Avatar',
-            'voice_cloning': 'Voice Cloning',
             'rtc': 'RTC'
         };
 
         tabs.forEach(tab => {
             const tabFormData = formData[tab];
             const hasProvider = tabFormData.provider !== '';
-            const hasUsage = tabFormData.minutes > 0 || tabFormData.tokens > 0 || tabFormData.characters > 0 || tabFormData.voices > 0;
+            const hasModel = tab === 'rtc' || tabFormData.model !== '';
+            const hasUsage = tabFormData.minutes > 0 || tabFormData.tokens > 0 || tabFormData.characters > 0;
             
-            if (!hasProvider || !hasUsage) {
+            if (!hasProvider || !hasModel || !hasUsage) {
                 missingServices.push(tabNames[tab]);
             }
         });
@@ -252,7 +552,7 @@ const PricingCalculator = () => {
     const renderDetailedBreakdown = () => {
         if (!showDetailedBreakdown) return null;
 
-        const tabs = ['asr', 'llm_input', 'llm_output', 'tts', 'ai_avatar', 'voice_cloning', 'rtc'];
+        const tabs = ['conversational_ai', 'asr', 'llm_input', 'llm_output', 'tts', 'ai_avatar', 'rtc'];
         const tabNames = {
             'conversational_ai': 'Conversational AI Engine',
             'asr': 'ASR',
@@ -260,58 +560,66 @@ const PricingCalculator = () => {
             'llm_output': 'LLM Output',
             'tts': 'TTS',
             'ai_avatar': 'AI-Avatar',
-            'voice_cloning': 'Voice Cloning',
             'rtc': 'RTC'
         };
 
         const allTabsStatus = tabs.map(tab => {
             const tabFormData = formData[tab];
             const hasProvider = tabFormData.provider !== '';
-            const hasUsage = tabFormData.minutes > 0 || tabFormData.tokens > 0 || tabFormData.characters > 0 || tabFormData.voices > 0;
+            const hasModel = tab === 'rtc' || tabFormData.model !== '';
+            const hasUsage = tabFormData.minutes > 0 || tabFormData.tokens > 0 || tabFormData.characters > 0;
             
-            if (hasProvider && hasUsage) {
-                const provider = PROVIDERS[tab].find(p => p.id === tabFormData.provider);
+            if (hasProvider && hasModel && hasUsage) {
                 let cost = 0;
                 let usage = 0;
                 let unit = '';
+                let providerName = '';
+                let modelName = '';
 
-                switch (tab) {
-                    case 'conversational_ai':
-                        cost = tabFormData.minutes * provider.costPerMinute;
-                        usage = tabFormData.minutes;
-                        unit = 'minutes';
-                        break;
-                    case 'asr':
-                        cost = tabFormData.minutes * provider.costPerMinute;
-                        usage = tabFormData.minutes;
-                        unit = 'minutes';
-                        break;
-                    case 'llm_input':
-                    case 'llm_output':
-                        cost = (tabFormData.tokens / 1000) * provider.costPer1kTokens;
-                        usage = tabFormData.tokens;
-                        unit = 'tokens';
-                        break;
-                    case 'tts':
-                        cost = (tabFormData.characters / 1000) * provider.costPer1kChars;
-                        usage = tabFormData.characters;
-                        unit = 'characters';
-                        break;
-                    case 'ai_avatar':
-                        cost = tabFormData.minutes * provider.costPerMinute;
-                        usage = tabFormData.minutes;
-                        unit = 'minutes';
-                        break;
-                    case 'voice_cloning':
-                        cost = tabFormData.voices * provider.costPerVoice;
-                        usage = tabFormData.voices;
-                        unit = 'voices';
-                        break;
-                    case 'rtc':
+                if (tab === 'rtc') {
+                    // RTC uses the old structure
+                    const provider = PROVIDERS[tab].find(p => p.id === tabFormData.provider);
+                    if (provider) {
                         cost = (tabFormData.minutes / 1000) * provider.costPer1kMinutes;
                         usage = tabFormData.minutes;
                         unit = 'minutes';
-                        break;
+                        providerName = provider.name;
+                    }
+                } else {
+                    // New structure with providers and models
+                    const provider = PROVIDERS[tab]?.providers?.find(p => p.id === tabFormData.provider);
+                    if (provider) {
+                        const model = provider.models.find(m => m.id === tabFormData.model);
+                        if (model) {
+                            providerName = provider.name;
+                            modelName = model.name;
+                            
+                            switch (tab) {
+                                case 'conversational_ai':
+                                case 'asr':
+                                case 'ai_avatar':
+                                    cost = tabFormData.minutes * model.unitPrice;
+                                    usage = tabFormData.minutes;
+                                    unit = 'minutes';
+                                    break;
+                                case 'llm_input':
+                                    cost = (tabFormData.tokens / 1000000) * model.inputPrice;
+                                    usage = tabFormData.tokens;
+                                    unit = 'tokens';
+                                    break;
+                                case 'llm_output':
+                                    cost = (tabFormData.tokens / 1000000) * model.outputPrice;
+                                    usage = tabFormData.tokens;
+                                    unit = 'tokens';
+                                    break;
+                                case 'tts':
+                                    cost = (tabFormData.characters / 1000000) * model.unitPrice;
+                                    usage = tabFormData.characters;
+                                    unit = 'characters';
+                                    break;
+                            }
+                        }
+                    }
                 }
 
                 return {
@@ -319,7 +627,7 @@ const PricingCalculator = () => {
                     status: 'configured',
                     cost: cost,
                     usage: usage,
-                    provider: provider.name,
+                    provider: modelName ? `${providerName} - ${modelName}` : providerName,
                     unit: unit,
                     color: COLORS[tabs.indexOf(tab) % COLORS.length]
                 };
@@ -347,8 +655,10 @@ const PricingCalculator = () => {
                                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, fontSize: '0.875rem', color: 'var(--neutral-600)' }}>
                                     <li style={{ marginBottom: '0.25rem' }}>• Provider: {item.provider}</li>
                                     <li style={{ marginBottom: '0.25rem' }}>• Usage: {item.usage.toLocaleString()} {item.unit}</li>
-                                    <li style={{ marginBottom: '0.25rem' }}>• Cost per {item.unit === 'tokens' || item.unit === 'characters' || (item.unit === 'minutes' && item.name === 'RTC') ? '1k ' + item.unit : item.unit}: ${
-                                        item.unit === 'tokens' || item.unit === 'characters' || (item.unit === 'minutes' && item.name === 'RTC')
+                                    <li style={{ marginBottom: '0.25rem' }}>• Cost per {item.unit === 'tokens' || item.unit === 'characters' ? '1M ' + item.unit : (item.unit === 'minutes' && item.name === 'RTC') ? '1k ' + item.unit : item.unit}: ${
+                                        item.unit === 'tokens' || item.unit === 'characters' 
+                                            ? ((item.cost / item.usage) * 1000000).toFixed(6)
+                                            : (item.unit === 'minutes' && item.name === 'RTC')
                                             ? ((item.cost / item.usage) * 1000).toFixed(6)
                                             : (item.cost / item.usage).toFixed(6)
                                     }</li>
@@ -387,25 +697,72 @@ const PricingCalculator = () => {
     };
 
     const renderTabContent = () => {
+        const getSelectedModel = (tab) => {
+            const tabData = formData[tab];
+            if (!tabData.provider || !tabData.model) return null;
+            
+            const provider = PROVIDERS[tab]?.providers?.find(p => p.id === tabData.provider);
+            if (!provider) return null;
+            
+            return provider.models.find(m => m.id === tabData.model);
+        };
+
+        const handleProviderChange = (tab, providerId) => {
+            handleInputChange(tab, 'provider', providerId);
+            // Reset model when provider changes
+            handleInputChange(tab, 'model', '');
+        };
+
         switch (activeTab) {
             case 'conversational_ai':
                 return (
                     <div className="tab-content active">
                         <div className="form-group">
-                            <label htmlFor="conversational-ai-provider">Conversational AI Engine Provider</label>
+                            <label>Provider</label>
                             <select 
-                                id="conversational-ai-provider"
                                 value={formData.conversational_ai.provider}
-                                onChange={(e) => handleInputChange('conversational_ai', 'provider', e.target.value)}
+                                onChange={(e) => handleProviderChange('conversational_ai', e.target.value)}
                             >
-                                <option value="">Select Conversational AI Provider</option>
-                                {PROVIDERS.conversational_ai.map(provider => (
+                                <option value="">Select Provider</option>
+                                {PROVIDERS.conversational_ai.providers.map(provider => (
                                     <option key={provider.id} value={provider.id}>
                                         {provider.name}
                                     </option>
                                 ))}
                             </select>
                         </div>
+                        <div className="form-group">
+                            <label>Model</label>
+                            <select 
+                                value={formData.conversational_ai.model}
+                                onChange={(e) => handleInputChange('conversational_ai', 'model', e.target.value)}
+                                disabled={!formData.conversational_ai.provider}
+                            >
+                                <option value="">Select Model</option>
+                                {formData.conversational_ai.provider && PROVIDERS.conversational_ai.providers
+                                    .find(p => p.id === formData.conversational_ai.provider)?.models.map(model => (
+                                        <option key={model.id} value={model.id}>
+                                            {model.name}
+                                        </option>
+                                    ))}
+                            </select>
+                        </div>
+                        {formData.conversational_ai.model && (
+                            <>
+                                <div className="form-group">
+                                    <label>Pricing Unit</label>
+                                    <div className="pricing-unit-display">
+                                        {getSelectedModel('conversational_ai')?.pricingUnit}
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label>Unit Price (USD)</label>
+                                    <div className="unit-price-display">
+                                        ${getSelectedModel('conversational_ai')?.unitPrice?.toFixed(6)}
+                                    </div>
+                                </div>
+                            </>
+                        )}
                         <div className="form-group">
                             <label htmlFor="conversational-ai-minutes">Minutes per month</label>
                             <input
@@ -423,20 +780,51 @@ const PricingCalculator = () => {
                 return (
                     <div className="tab-content active">
                         <div className="form-group">
-                            <label htmlFor="asr-provider">ASR Provider</label>
+                            <label>Provider</label>
                             <select 
-                                id="asr-provider"
                                 value={formData.asr.provider}
-                                onChange={(e) => handleInputChange('asr', 'provider', e.target.value)}
+                                onChange={(e) => handleProviderChange('asr', e.target.value)}
                             >
-                                <option value="">Select ASR Provider</option>
-                                {PROVIDERS.asr.map(provider => (
+                                <option value="">Select Provider</option>
+                                {PROVIDERS.asr.providers.map(provider => (
                                     <option key={provider.id} value={provider.id}>
                                         {provider.name}
                                     </option>
                                 ))}
                             </select>
                         </div>
+                        <div className="form-group">
+                            <label>Model</label>
+                            <select 
+                                value={formData.asr.model}
+                                onChange={(e) => handleInputChange('asr', 'model', e.target.value)}
+                                disabled={!formData.asr.provider}
+                            >
+                                <option value="">Select Model</option>
+                                {formData.asr.provider && PROVIDERS.asr.providers
+                                    .find(p => p.id === formData.asr.provider)?.models.map(model => (
+                                        <option key={model.id} value={model.id}>
+                                            {model.name}
+                                        </option>
+                                    ))}
+                            </select>
+                        </div>
+                        {formData.asr.model && (
+                            <>
+                                <div className="form-group">
+                                    <label>Pricing Unit</label>
+                                    <div className="pricing-unit-display">
+                                        {getSelectedModel('asr')?.pricingUnit}
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label>Unit Price (USD)</label>
+                                    <div className="unit-price-display">
+                                        ${getSelectedModel('asr')?.unitPrice?.toFixed(6)}
+                                    </div>
+                                </div>
+                            </>
+                        )}
                         <div className="form-group">
                             <label htmlFor="asr-minutes">Minutes per month</label>
                             <input
@@ -454,20 +842,52 @@ const PricingCalculator = () => {
                 return (
                     <div className="tab-content active">
                         <div className="form-group">
-                            <label htmlFor="llm-input-provider">LLM Input Provider</label>
+                            <label>Provider</label>
                             <select 
-                                id="llm-input-provider"
                                 value={formData.llm_input.provider}
-                                onChange={(e) => handleInputChange('llm_input', 'provider', e.target.value)}
+                                onChange={(e) => handleProviderChange('llm_input', e.target.value)}
                             >
-                                <option value="">Select LLM Input Provider</option>
-                                {PROVIDERS.llm_input.map(provider => (
+                                <option value="">Select Provider</option>
+                                {PROVIDERS.llm.providers.map(provider => (
                                     <option key={provider.id} value={provider.id}>
                                         {provider.name}
                                     </option>
                                 ))}
                             </select>
                         </div>
+                        <div className="form-group">
+                            <label>Model</label>
+                            <select 
+                                value={formData.llm_input.model}
+                                onChange={(e) => handleInputChange('llm_input', 'model', e.target.value)}
+                                disabled={!formData.llm_input.provider}
+                            >
+                                <option value="">Select Model</option>
+                                {formData.llm_input.provider && PROVIDERS.llm.providers
+                                    .find(p => p.id === formData.llm_input.provider)?.models.map(model => (
+                                        <option key={model.id} value={model.id}>
+                                            {model.name}
+                                        </option>
+                                    ))}
+                            </select>
+                        </div>
+                        {formData.llm_input.model && (
+                            <>
+                                <div className="form-group">
+                                    <label>Pricing Unit</label>
+                                    <div className="pricing-unit-display">
+                                        {getSelectedModel('llm_input')?.pricingUnit}
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label>Unit Price (USD)</label>
+                                    <div className="unit-price-display">
+                                        Input: ${getSelectedModel('llm_input')?.inputPrice?.toFixed(2)}<br />
+                                        Output: ${getSelectedModel('llm_input')?.outputPrice?.toFixed(2)}
+                                    </div>
+                                </div>
+                            </>
+                        )}
                         <div className="form-group">
                             <label htmlFor="llm-input-tokens">Tokens per month</label>
                             <input
@@ -485,20 +905,52 @@ const PricingCalculator = () => {
                 return (
                     <div className="tab-content active">
                         <div className="form-group">
-                            <label htmlFor="llm-output-provider">LLM Output Provider</label>
+                            <label>Provider</label>
                             <select 
-                                id="llm-output-provider"
                                 value={formData.llm_output.provider}
-                                onChange={(e) => handleInputChange('llm_output', 'provider', e.target.value)}
+                                onChange={(e) => handleProviderChange('llm_output', e.target.value)}
                             >
-                                <option value="">Select LLM Output Provider</option>
-                                {PROVIDERS.llm_output.map(provider => (
+                                <option value="">Select Provider</option>
+                                {PROVIDERS.llm.providers.map(provider => (
                                     <option key={provider.id} value={provider.id}>
                                         {provider.name}
                                     </option>
                                 ))}
                             </select>
                         </div>
+                        <div className="form-group">
+                            <label>Model</label>
+                            <select 
+                                value={formData.llm_output.model}
+                                onChange={(e) => handleInputChange('llm_output', 'model', e.target.value)}
+                                disabled={!formData.llm_output.provider}
+                            >
+                                <option value="">Select Model</option>
+                                {formData.llm_output.provider && PROVIDERS.llm.providers
+                                    .find(p => p.id === formData.llm_output.provider)?.models.map(model => (
+                                        <option key={model.id} value={model.id}>
+                                            {model.name}
+                                        </option>
+                                    ))}
+                            </select>
+                        </div>
+                        {formData.llm_output.model && (
+                            <>
+                                <div className="form-group">
+                                    <label>Pricing Unit</label>
+                                    <div className="pricing-unit-display">
+                                        {getSelectedModel('llm_output')?.pricingUnit}
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label>Unit Price (USD)</label>
+                                    <div className="unit-price-display">
+                                        Input: ${getSelectedModel('llm_output')?.inputPrice?.toFixed(2)}<br />
+                                        Output: ${getSelectedModel('llm_output')?.outputPrice?.toFixed(2)}
+                                    </div>
+                                </div>
+                            </>
+                        )}
                         <div className="form-group">
                             <label htmlFor="llm-output-tokens">Tokens per month</label>
                             <input
@@ -516,20 +968,51 @@ const PricingCalculator = () => {
                 return (
                     <div className="tab-content active">
                         <div className="form-group">
-                            <label htmlFor="tts-provider">TTS Provider</label>
+                            <label>Provider</label>
                             <select 
-                                id="tts-provider"
                                 value={formData.tts.provider}
-                                onChange={(e) => handleInputChange('tts', 'provider', e.target.value)}
+                                onChange={(e) => handleProviderChange('tts', e.target.value)}
                             >
-                                <option value="">Select TTS Provider</option>
-                                {PROVIDERS.tts.map(provider => (
+                                <option value="">Select Provider</option>
+                                {PROVIDERS.tts.providers.map(provider => (
                                     <option key={provider.id} value={provider.id}>
                                         {provider.name}
                                     </option>
                                 ))}
                             </select>
                         </div>
+                        <div className="form-group">
+                            <label>Model</label>
+                            <select 
+                                value={formData.tts.model}
+                                onChange={(e) => handleInputChange('tts', 'model', e.target.value)}
+                                disabled={!formData.tts.provider}
+                            >
+                                <option value="">Select Model</option>
+                                {formData.tts.provider && PROVIDERS.tts.providers
+                                    .find(p => p.id === formData.tts.provider)?.models.map(model => (
+                                        <option key={model.id} value={model.id}>
+                                            {model.name}
+                                        </option>
+                                    ))}
+                            </select>
+                        </div>
+                        {formData.tts.model && (
+                            <>
+                                <div className="form-group">
+                                    <label>Pricing Unit</label>
+                                    <div className="pricing-unit-display">
+                                        {getSelectedModel('tts')?.pricingUnit}
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label>Unit Price (USD)</label>
+                                    <div className="unit-price-display">
+                                        ${getSelectedModel('tts')?.unitPrice?.toFixed(2)}
+                                    </div>
+                                </div>
+                            </>
+                        )}
                         <div className="form-group">
                             <label htmlFor="tts-characters">Characters per month</label>
                             <input
@@ -547,20 +1030,51 @@ const PricingCalculator = () => {
                 return (
                     <div className="tab-content active">
                         <div className="form-group">
-                            <label htmlFor="avatar-provider">AI-Avatar Provider</label>
+                            <label>Provider</label>
                             <select 
-                                id="avatar-provider"
                                 value={formData.ai_avatar.provider}
-                                onChange={(e) => handleInputChange('ai_avatar', 'provider', e.target.value)}
+                                onChange={(e) => handleProviderChange('ai_avatar', e.target.value)}
                             >
-                                <option value="">Select AI-Avatar Provider</option>
-                                {PROVIDERS.ai_avatar.map(provider => (
+                                <option value="">Select Provider</option>
+                                {PROVIDERS.ai_avatar.providers.map(provider => (
                                     <option key={provider.id} value={provider.id}>
                                         {provider.name}
                                     </option>
                                 ))}
                             </select>
                         </div>
+                        <div className="form-group">
+                            <label>Model</label>
+                            <select 
+                                value={formData.ai_avatar.model}
+                                onChange={(e) => handleInputChange('ai_avatar', 'model', e.target.value)}
+                                disabled={!formData.ai_avatar.provider}
+                            >
+                                <option value="">Select Model</option>
+                                {formData.ai_avatar.provider && PROVIDERS.ai_avatar.providers
+                                    .find(p => p.id === formData.ai_avatar.provider)?.models.map(model => (
+                                        <option key={model.id} value={model.id}>
+                                            {model.name}
+                                        </option>
+                                    ))}
+                            </select>
+                        </div>
+                        {formData.ai_avatar.model && (
+                            <>
+                                <div className="form-group">
+                                    <label>Pricing Unit</label>
+                                    <div className="pricing-unit-display">
+                                        {getSelectedModel('ai_avatar')?.pricingUnit}
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label>Unit Price (USD)</label>
+                                    <div className="unit-price-display">
+                                        ${getSelectedModel('ai_avatar')?.unitPrice?.toFixed(2)}
+                                    </div>
+                                </div>
+                            </>
+                        )}
                         <div className="form-group">
                             <label htmlFor="avatar-minutes">Minutes per month</label>
                             <input
@@ -570,37 +1084,6 @@ const PricingCalculator = () => {
                                 placeholder="e.g., 120"
                                 value={formData.ai_avatar.minutes}
                                 onChange={(e) => handleInputChange('ai_avatar', 'minutes', Number(e.target.value))}
-                            />
-                        </div>
-                    </div>
-                );
-            case 'voice_cloning':
-                return (
-                    <div className="tab-content active">
-                        <div className="form-group">
-                            <label htmlFor="cloning-provider">Voice Cloning Provider</label>
-                            <select 
-                                id="cloning-provider"
-                                value={formData.voice_cloning.provider}
-                                onChange={(e) => handleInputChange('voice_cloning', 'provider', e.target.value)}
-                            >
-                                <option value="">Select Voice Cloning Provider</option>
-                                {PROVIDERS.voice_cloning.map(provider => (
-                                    <option key={provider.id} value={provider.id}>
-                                        {provider.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="cloning-voices">Number of voices</label>
-                            <input
-                                id="cloning-voices"
-                                type="number"
-                                min="0"
-                                placeholder="e.g., 5"
-                                value={formData.voice_cloning.voices}
-                                onChange={(e) => handleInputChange('voice_cloning', 'voices', Number(e.target.value))}
                             />
                         </div>
                     </div>
