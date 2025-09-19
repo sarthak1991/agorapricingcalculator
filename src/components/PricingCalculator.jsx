@@ -380,10 +380,12 @@ const PricingCalculator = () => {
     const [formData, setFormData] = useState({
         conversational_ai: { provider: '', model: '', minutes: 60 },
         asr: { provider: '', model: '', minutes: 60 },
-        llm: { provider: '', model: '', inputTokens: 4628, outputTokens: 9256 },
+        llm: { provider: '', model: '', minutes: 60 },
         tts: { provider: '', model: '', characters: 30082 },
         ai_avatar: { provider: '', model: '', minutes: 60 }
     });
+
+    const isASRTabDisabled = formData.conversational_ai.provider === 'with-ares-asr';
 
     const handleInputChange = (tab, field, value) => {
         // Prevent negative values for numeric fields
@@ -406,10 +408,26 @@ const PricingCalculator = () => {
                 if (provider && provider.models.length === 1) {
                     newData[tab].model = provider.models[0].id;
                 }
+                
+                // If switching from "with-ares-asr" to another provider and ASR tab is active, switch to conversational_ai
+                if (tab === 'conversational_ai' && prev[tab].provider === 'with-ares-asr' && value !== 'with-ares-asr' && activeTab === 'asr') {
+                    setTimeout(() => setActiveTab('conversational_ai'), 0);
+                }
             }
             
             return newData;
         });
+    };
+
+    const calculateLLMTokens = (minutes) => {
+        // Based on the example: 60 minutes = 4628 input tokens, 9256 output tokens
+        const inputTokensPerMinute = 4628 / 60; // ~77.13 input tokens per minute
+        const outputTokensPerMinute = 9256 / 60; // ~154.27 output tokens per minute
+        
+        return {
+            inputTokens: Math.round(minutes * inputTokensPerMinute),
+            outputTokens: Math.round(minutes * outputTokensPerMinute)
+        };
     };
 
     const getAllTabData = () => {
@@ -428,7 +446,7 @@ const PricingCalculator = () => {
             const tabFormData = formData[tab];
             const hasProvider = tabFormData.provider !== '';
             const hasModel = tabFormData.model !== '';
-            const hasUsage = tabFormData.minutes > 0 || tabFormData.inputTokens > 0 || tabFormData.outputTokens > 0 || tabFormData.characters > 0;
+            const hasUsage = tabFormData.minutes > 0 || tabFormData.characters > 0;
             
             if (hasProvider && hasModel && hasUsage) {
                 let cost = 0;
@@ -454,11 +472,12 @@ const PricingCalculator = () => {
                                 break;
                             }
                             case 'llm': {
-                                const inputCost = (tabFormData.inputTokens / 1000000) * model.inputPrice;
-                                const outputCost = (tabFormData.outputTokens / 1000000) * model.outputPrice;
+                                const llmTokens = calculateLLMTokens(tabFormData.minutes);
+                                const inputCost = (llmTokens.inputTokens / 1000000) * model.inputPrice;
+                                const outputCost = (llmTokens.outputTokens / 1000000) * model.outputPrice;
                                 cost = inputCost + outputCost;
-                                usage = tabFormData.inputTokens + tabFormData.outputTokens;
-                                unit = 'tokens';
+                                usage = tabFormData.minutes;
+                                unit = 'minutes';
                                 break;
                             }
                             case 'tts': {
@@ -535,7 +554,7 @@ const PricingCalculator = () => {
             const tabFormData = formData[tab];
             const hasProvider = tabFormData.provider !== '';
             const hasModel = tabFormData.model !== '';
-            const hasUsage = tabFormData.minutes > 0 || tabFormData.inputTokens > 0 || tabFormData.outputTokens > 0 || tabFormData.characters > 0;
+            const hasUsage = tabFormData.minutes > 0 || tabFormData.characters > 0;
             
             if (!hasProvider || !hasModel || !hasUsage) {
                 missingServices.push(tabNames[tab]);
@@ -643,7 +662,7 @@ const PricingCalculator = () => {
             const tabFormData = formData[tab];
             const hasProvider = tabFormData.provider !== '';
             const hasModel = tabFormData.model !== '';
-            const hasUsage = tabFormData.minutes > 0 || tabFormData.inputTokens > 0 || tabFormData.outputTokens > 0 || tabFormData.characters > 0;
+            const hasUsage = tabFormData.minutes > 0 || tabFormData.characters > 0;
             
             if (hasProvider && hasModel && hasUsage) {
                 let cost = 0;
@@ -669,11 +688,12 @@ const PricingCalculator = () => {
                                 break;
                             }
                             case 'llm': {
-                                const inputCost = (tabFormData.inputTokens / 1000000) * model.inputPrice;
-                                const outputCost = (tabFormData.outputTokens / 1000000) * model.outputPrice;
+                                const llmTokens = calculateLLMTokens(tabFormData.minutes);
+                                const inputCost = (llmTokens.inputTokens / 1000000) * model.inputPrice;
+                                const outputCost = (llmTokens.outputTokens / 1000000) * model.outputPrice;
                                 cost = inputCost + outputCost;
-                                usage = tabFormData.inputTokens + tabFormData.outputTokens;
-                                unit = 'tokens';
+                                usage = tabFormData.minutes;
+                                unit = 'minutes';
                                 break;
                             }
                             case 'tts': {
@@ -711,6 +731,8 @@ const PricingCalculator = () => {
                 {allTabsStatus.map((item, index) => {
                     const isAIEngine = item.name === 'AI_Engine' && item.status === 'configured';
                     const costBreakdown = isAIEngine ? getAICostBreakdown() : null;
+                    const isLLM = item.name === 'LLM' && item.status === 'configured';
+                    const llmTokenBreakdown = isLLM ? calculateLLMTokens(formData.llm.minutes) : null;
                     
                     return (
                     <div key={index} style={{ marginBottom: '1rem', padding: '1rem', background: 'white', borderRadius: '0.375rem' }}>
@@ -722,6 +744,11 @@ const PricingCalculator = () => {
                                     {isAIEngine && (
                                         <span style={{ fontSize: '0.75rem', color: 'var(--neutral-500)', fontStyle: 'italic' }}>
                                             (Cost breakdown shown below)
+                                        </span>
+                                    )}
+                                    {isLLM && (
+                                        <span style={{ fontSize: '0.75rem', color: 'var(--neutral-500)', fontStyle: 'italic' }}>
+                                            (Token breakdown shown below)
                                         </span>
                                     )}
                                 </div>
@@ -825,6 +852,61 @@ const PricingCalculator = () => {
                                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                                 <span>Total:</span>
                                                 <span>${costBreakdown.totalCost.toFixed(4)}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                
+                                {isLLM && llmTokenBreakdown && (
+                                    <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--neutral-200)' }}>
+                                        <h6 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--neutral-800)', marginBottom: '0.75rem' }}>
+                                            Token Breakdown ({formData.llm.minutes.toLocaleString()} minutes):
+                                        </h6>
+                                        
+                                        <div style={{ marginBottom: '0.75rem', fontSize: '0.813rem', color: 'var(--neutral-600)' }}>
+                                            <div style={{ fontWeight: 500, marginBottom: '0.25rem' }}>Input Tokens:</div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.125rem', fontSize: '0.75rem' }}>
+                                                <span>Rate:</span>
+                                                <span>77.13 tokens/minute</span>
+                                            </div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.125rem', fontSize: '0.75rem' }}>
+                                                <span>Duration:</span>
+                                                <span>{formData.llm.minutes.toLocaleString()} minutes</span>
+                                            </div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.125rem', fontSize: '0.75rem' }}>
+                                                <span>Calculation:</span>
+                                                <span>77.13 × {formData.llm.minutes.toLocaleString()}</span>
+                                            </div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 500, borderTop: '1px solid var(--neutral-200)', paddingTop: '0.125rem' }}>
+                                                <span>Total Input Tokens:</span>
+                                                <span>{llmTokenBreakdown.inputTokens.toLocaleString()}</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div style={{ marginBottom: '0.75rem', fontSize: '0.813rem', color: 'var(--neutral-600)' }}>
+                                            <div style={{ fontWeight: 500, marginBottom: '0.25rem' }}>Output Tokens:</div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.125rem', fontSize: '0.75rem' }}>
+                                                <span>Rate:</span>
+                                                <span>154.27 tokens/minute</span>
+                                            </div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.125rem', fontSize: '0.75rem' }}>
+                                                <span>Duration:</span>
+                                                <span>{formData.llm.minutes.toLocaleString()} minutes</span>
+                                            </div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.125rem', fontSize: '0.75rem' }}>
+                                                <span>Calculation:</span>
+                                                <span>154.27 × {formData.llm.minutes.toLocaleString()}</span>
+                                            </div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 500, borderTop: '1px solid var(--neutral-200)', paddingTop: '0.125rem' }}>
+                                                <span>Total Output Tokens:</span>
+                                                <span>{llmTokenBreakdown.outputTokens.toLocaleString()}</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div style={{ paddingTop: '0.5rem', borderTop: '1px dashed var(--neutral-300)', fontSize: '0.875rem', fontWeight: 600, color: 'var(--neutral-800)' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                <span>Total Tokens:</span>
+                                                <span>{(llmTokenBreakdown.inputTokens + llmTokenBreakdown.outputTokens).toLocaleString()}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1067,26 +1149,25 @@ const PricingCalculator = () => {
                             </>
                         )}
                         <div className="form-group">
-                            <label htmlFor="llm-input-tokens">Input Tokens per month</label>
+                            <label htmlFor="llm-minutes">Minutes per month</label>
                             <input
-                                id="llm-input-tokens"
+                                id="llm-minutes"
                                 type="number"
                                 min="0"
-                                placeholder="e.g., 5000000"
-                                value={formData.llm.inputTokens}
-                                onChange={(e) => handleInputChange('llm', 'inputTokens', Number(e.target.value))}
+                                placeholder="e.g., 60"
+                                value={formData.llm.minutes}
+                                onChange={(e) => handleInputChange('llm', 'minutes', Number(e.target.value))}
                             />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="llm-output-tokens">Output Tokens per month</label>
-                            <input
-                                id="llm-output-tokens"
-                                type="number"
-                                min="0"
-                                placeholder="e.g., 5000000"
-                                value={formData.llm.outputTokens}
-                                onChange={(e) => handleInputChange('llm', 'outputTokens', Number(e.target.value))}
-                            />
+                            <label>Token Usage (Estimated)</label>
+                            <div className="token-usage-display">
+                                <div>Input: {calculateLLMTokens(formData.llm.minutes).inputTokens.toLocaleString()} tokens</div>
+                                <div>Output: {calculateLLMTokens(formData.llm.minutes).outputTokens.toLocaleString()} tokens</div>
+                                <div style={{ fontSize: '0.75rem', color: 'var(--neutral-500)', marginTop: '0.25rem' }}>
+                                    Based on 77.13 input tokens/min and 154.27 output tokens/min
+                                </div>
+                            </div>
                         </div>
                     </div>
                 );
@@ -1257,8 +1338,13 @@ const PricingCalculator = () => {
                             ].map(tab => (
                                 <button
                                     key={tab.key}
-                                    className={`tab ${activeTab === tab.key ? 'active' : ''}`}
-                                    onClick={() => setActiveTab(tab.key)}
+                                    className={`tab ${activeTab === tab.key ? 'active' : ''} ${tab.key === 'asr' && isASRTabDisabled ? 'disabled' : ''}`}
+                                    onClick={() => {
+                                        if (tab.key !== 'asr' || !isASRTabDisabled) {
+                                            setActiveTab(tab.key);
+                                        }
+                                    }}
+                                    title={tab.key === 'asr' && isASRTabDisabled ? 'ASR is already included in "With ARES ASR"' : ''}
                                 >
                                     {tab.label}
                                 </button>
