@@ -1324,7 +1324,7 @@ const PricingCalculator = () => {
                 <div className="content-left">
                     <div className="title-section">
                         <h2>Pricing Calculator</h2>
-                        <p>Estimate your ConvoAI SDK costs based on your chosen providers and usage.</p>
+                        <p>Estimate your ConversationalAI Engine costs based on your chosen providers and usage.</p>
                     </div>
 
                     <div className="tabs-section">
