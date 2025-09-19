@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -381,7 +381,7 @@ const PricingCalculator = () => {
         conversational_ai: { provider: '', model: '', minutes: 60 },
         asr: { provider: '', model: '', minutes: 60 },
         llm: { provider: '', model: '', minutes: 60 },
-        tts: { provider: '', model: '', characters: 30082 },
+        tts: { provider: '', model: '', minutes: 60 },
         ai_avatar: { provider: '', model: '', minutes: 60 }
     });
 
@@ -402,6 +402,15 @@ const PricingCalculator = () => {
                 }
             };
             
+            // If minutes field is changed, update minutes for all tabs
+            if (field === 'minutes') {
+                Object.keys(newData).forEach(key => {
+                    if (key !== tab && Object.prototype.hasOwnProperty.call(newData[key], 'minutes')) {
+                        newData[key].minutes = value;
+                    }
+                });
+            }
+            
             // Auto-select default model when provider changes for single-model providers
             if (field === 'provider') {
                 const provider = PROVIDERS[tab]?.providers?.find(p => p.id === value);
@@ -419,6 +428,12 @@ const PricingCalculator = () => {
         });
     };
 
+    const calculateTTSCharacters = (minutes) => {
+        // Based on the requirement: 30082 characters = 60 minutes
+        const charactersPerMinute = 30082 / 60; // ~501.37 characters per minute
+        return Math.round(minutes * charactersPerMinute);
+    };
+
     const calculateLLMTokens = (minutes) => {
         // Based on the example: 60 minutes = 4628 input tokens, 9256 output tokens
         const inputTokensPerMinute = 4628 / 60; // ~77.13 input tokens per minute
@@ -430,7 +445,7 @@ const PricingCalculator = () => {
         };
     };
 
-    const getAllTabData = () => {
+    const getAllTabData = useCallback(() => {
         const allData = [];
         const tabs = ['conversational_ai', 'asr', 'llm', 'tts', 'ai_avatar'];
         const tabNames = {
@@ -446,7 +461,7 @@ const PricingCalculator = () => {
             const tabFormData = formData[tab];
             const hasProvider = tabFormData.provider !== '';
             const hasModel = tabFormData.model !== '';
-            const hasUsage = tabFormData.minutes > 0 || tabFormData.characters > 0;
+            const hasUsage = tabFormData.minutes > 0;
             
             if (hasProvider && hasModel && hasUsage) {
                 let cost = 0;
@@ -481,9 +496,10 @@ const PricingCalculator = () => {
                                 break;
                             }
                             case 'tts': {
-                                cost = (tabFormData.characters / 1000000) * model.unitPrice;
-                                usage = tabFormData.characters;
-                                unit = 'characters';
+                                const characters = calculateTTSCharacters(tabFormData.minutes);
+                                cost = (characters / 1000000) * model.unitPrice;
+                                usage = tabFormData.minutes;
+                                unit = 'minutes';
                                 break;
                             }
                         }
@@ -504,7 +520,7 @@ const PricingCalculator = () => {
         });
 
         return allData;
-    };
+    }, [formData]);
 
     const calculatedData = useMemo(() => {
         const allData = getAllTabData();
@@ -514,7 +530,7 @@ const PricingCalculator = () => {
             totalCost: totalCost,
             allData: allData 
         };
-    }, [formData]);
+    }, [getAllTabData]);
 
     const exportToExcel = () => {
         const exportData = [
@@ -523,10 +539,13 @@ const PricingCalculator = () => {
 
         calculatedData.allData.forEach(item => {
             let unitCostDisplay;
-            if (item.unit === 'tokens' || item.unit === 'characters') {
+            if (item.unit === 'tokens') {
                 unitCostDisplay = `$${((item.cost / item.usage) * 1000000).toFixed(6)}/1M ${item.unit}`;
             } else if (item.unit === 'minutes' && item.name === 'RTC') {
                 unitCostDisplay = `$${((item.cost / item.usage) * 1000).toFixed(6)}/1k ${item.unit}`;
+            } else if (item.unit === 'minutes' && item.name === 'TTS') {
+                const characters = calculateTTSCharacters(item.usage);
+                unitCostDisplay = `$${((item.cost / characters) * 1000000).toFixed(6)}/1M characters`;
             } else {
                 unitCostDisplay = `$${(item.cost / item.usage).toFixed(6)}/${item.unit}`;
             }
@@ -554,7 +573,7 @@ const PricingCalculator = () => {
             const tabFormData = formData[tab];
             const hasProvider = tabFormData.provider !== '';
             const hasModel = tabFormData.model !== '';
-            const hasUsage = tabFormData.minutes > 0 || tabFormData.characters > 0;
+            const hasUsage = tabFormData.minutes > 0;
             
             if (!hasProvider || !hasModel || !hasUsage) {
                 missingServices.push(tabNames[tab]);
@@ -662,7 +681,7 @@ const PricingCalculator = () => {
             const tabFormData = formData[tab];
             const hasProvider = tabFormData.provider !== '';
             const hasModel = tabFormData.model !== '';
-            const hasUsage = tabFormData.minutes > 0 || tabFormData.characters > 0;
+            const hasUsage = tabFormData.minutes > 0;
             
             if (hasProvider && hasModel && hasUsage) {
                 let cost = 0;
@@ -697,9 +716,10 @@ const PricingCalculator = () => {
                                 break;
                             }
                             case 'tts': {
-                                cost = (tabFormData.characters / 1000000) * model.unitPrice;
-                                usage = tabFormData.characters;
-                                unit = 'characters';
+                                const characters = calculateTTSCharacters(tabFormData.minutes);
+                                cost = (characters / 1000000) * model.unitPrice;
+                                usage = tabFormData.minutes;
+                                unit = 'minutes';
                                 break;
                             }
                         }
@@ -1222,15 +1242,24 @@ const PricingCalculator = () => {
                             </>
                         )}
                         <div className="form-group">
-                            <label htmlFor="tts-characters">Characters per month</label>
+                            <label htmlFor="tts-minutes">Minutes per month</label>
                             <input
-                                id="tts-characters"
+                                id="tts-minutes"
                                 type="number"
                                 min="0"
-                                placeholder="e.g., 1000000"
-                                value={formData.tts.characters}
-                                onChange={(e) => handleInputChange('tts', 'characters', Number(e.target.value))}
+                                placeholder="e.g., 60"
+                                value={formData.tts.minutes}
+                                onChange={(e) => handleInputChange('tts', 'minutes', Number(e.target.value))}
                             />
+                        </div>
+                        <div className="form-group">
+                            <label>Character Usage (Estimated)</label>
+                            <div className="token-usage-display">
+                                <div>{calculateTTSCharacters(formData.tts.minutes).toLocaleString()} characters</div>
+                                <div style={{ fontSize: '0.75rem', color: 'var(--neutral-500)', marginTop: '0.25rem' }}>
+                                    Based on 501.37 characters/minute (30082 chars = 60 minutes)
+                                </div>
+                            </div>
                         </div>
                     </div>
                 );
@@ -1370,7 +1399,11 @@ const PricingCalculator = () => {
                         <h3>Cost Distribution</h3>
                         <div className="total-cost">
                             <span className="amount">
-                                {calculatedData.totalCost > 0 ? `$${(calculatedData.totalCost / 1000).toFixed(1)}k` : '$0'}
+                                {calculatedData.totalCost > 0 
+                                    ? (calculatedData.totalCost >= 1000 
+                                        ? `$${(calculatedData.totalCost / 1000).toFixed(1)}k` 
+                                        : `$${calculatedData.totalCost.toFixed(2)}`)
+                                    : '$0'}
                             </span>
                             <span className="period">/month</span>
                         </div>
