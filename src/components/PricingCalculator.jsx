@@ -1339,7 +1339,7 @@ const PricingCalculator = () => {
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M6 6H42L36 24L42 42H6L12 24L6 6Z" fill="currentColor" />
                         </svg>
-                        <h1>ConvoAI SDK</h1>
+                        <h1>Agora's Conversational AI Engine</h1>
                     </div>
                     <nav className="nav-links">
                         <a href="https://docs.agora.io/en/conversational-ai/overview/product-overview" target="_blank" rel="noopener noreferrer">Documentation</a>
@@ -1353,7 +1353,7 @@ const PricingCalculator = () => {
                 <div className="content-left">
                     <div className="title-section">
                         <h2>Pricing Calculator</h2>
-                        <p>Estimate your ConversationalAI Engine costs based on your chosen providers and usage.</p>
+                        <p>Estimate your Conversational AI Engine costs based on your chosen providers and usage.</p>
                     </div>
 
                     <div className="tabs-section">
