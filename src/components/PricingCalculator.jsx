@@ -4,6 +4,8 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import './PricingCalculator.css';
 
+import logo from "../../public/agora-logo.webp"
+
 const COLORS = [
     '#3b82f6', // primary-500
     '#60a5fa', // light blue
@@ -1336,6 +1338,7 @@ const PricingCalculator = () => {
             <header className="header">
                 <div className="header-content">
                     <div className="logo">
+                        <img src={logo} alt="Agora" className="logo-img" />
                         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M6 6H42L36 24L42 42H6L12 24L6 6Z" fill="currentColor" />
                         </svg>
