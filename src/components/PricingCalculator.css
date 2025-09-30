@@ -36,13 +36,13 @@ body {
 }
 
 .header {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur-sm;
+  background: rgba(255, 255, 255, 1);
   padding: 1rem 0;
   position: sticky;
   top: 0;
   z-index: 10;
   border-bottom: 1px solid var(--neutral-200);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header-content {
@@ -59,6 +59,15 @@ body {
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.logo-img {
+  height: 2.5rem;
+  width: auto;
+  object-fit: contain;
+  margin-right: 1rem;
+  max-height: 3rem;
+  object-position: center;
 }
 
 .logo svg {
@@ -94,6 +103,13 @@ body {
 .nav-links a.active {
   color: var(--primary-600);
   font-weight: 600;
+}
+
+.nav-logo {
+  height: 2rem;
+  width: auto;
+  object-fit: contain;
+  margin-right: 2rem;
 }
 
 .main-content {
