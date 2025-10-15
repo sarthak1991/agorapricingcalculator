@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://sarthakbatra.github.io/agorapricingcalculator",
+  "homepage": "https://sarthakbatra.github.io/agorapricingcalculatorv2",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
