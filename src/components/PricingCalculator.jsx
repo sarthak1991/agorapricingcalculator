@@ -361,7 +361,6 @@ const PROVIDERS = {
 };
 
 const PricingCalculator = () => {
-    const [connectionType, setConnectionType] = useState('web-mobile');
     const [hoveredService, setHoveredService] = useState(null);
     const [formData, setFormData] = useState({
         conversational_ai: { provider: 'with-ares-asr', model: 'default' },
@@ -400,30 +399,7 @@ const PricingCalculator = () => {
         return Math.round(charactersPerMinute);
     };
 
-    const formatModelPrice = (service, provider, model) => {
-        if (service === 'conversational_ai') {
-            const unit = model.pricingUnit === 'per minute' ? 'minute' : 'min';
-            return `$${model.unitPrice.toFixed(4)}/${unit}`;
-        } else if (service === 'llm') {
-            const tokens = calculateLLMTokens();
-            const inputCost = (tokens.inputTokens / 1000000) * model.inputPrice;
-            const outputCost = (tokens.outputTokens / 1000000) * model.outputPrice;
-            const totalCost = inputCost + outputCost;
-            return `$${totalCost.toFixed(4)}/min`;
-        } else if (service === 'stt') {
-            const unit = model.pricingUnit === 'per minute' ? 'minute' : 'min';
-            return `$${model.unitPrice.toFixed(4)}/${unit}`;
-        } else if (service === 'tts') {
-            const characters = calculateTTSCharacters();
-            const cost = (characters / 1000000) * model.unitPrice;
-            return `$${cost.toFixed(4)}/min`;
-        } else if (service === 'ai_avatar') {
-            const unit = model.pricingUnit === 'per minute' ? 'minute' : 'min';
-            return `$${model.unitPrice.toFixed(4)}/${unit}`;
-        }
-        return '';
-    };
-
+    
     
     const calculatedCosts = useMemo(() => {
         const costs = {
@@ -540,230 +516,242 @@ const PricingCalculator = () => {
 
     return (
         <div className="pricing-calculator">
-            <div className="main-content">
-                {/* Left Hero Section */}
-                <div className="hero-section">
-                    <div className="label">PRICING CALCULATOR</div>
-                    <h1>
-                        Estimate costs for<br />
-                        <span className="highlight">AI voice and video agents</span>
-                    </h1>
-                    <p className="description">
-                        Select how your users will connect to agents and the AI models you intend to use to calculate your per-minute cost. Agora's plans include monthly allotments for agent session minutes and inference credits to call the most popular models. For the full list of supported AI providers and models, see <a href="https://docs.agora.io/en/conversational-ai/overview/product-overview" target="_blank" rel="noopener noreferrer">Documentation</a>.
-                    </p>
-                </div>
-
-                {/* Right Calculator Card */}
+            <div className="calculator-container">
                 <div className="calculator-card">
-                    {/* Connection Type Tabs - Hidden for now */}
-                    <div className="connection-tabs" style={{ display: 'none' }}>
-                        <span className="connection-tabs-label">How users connect to your agent</span>
-                        <button
-                            className={`tab-button ${connectionType === 'web-mobile' ? 'active' : ''}`}
-                            onClick={() => setConnectionType('web-mobile')}
-                        >
-                            <svg viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clipRule="evenodd" />
-                            </svg>
-                            Web/mobile
-                        </button>
+                    <div className="calculator-header">
+                        <h2 className="calculator-title">
+                            Pricing Calculator
+                        </h2>
+                        <p className="calculator-subtitle">
+                            Estimate costs for AI voice and video agents
+                        </p>
                     </div>
 
                     {/* Services Section */}
                     <div className="services-section">
                         {/* Agent Session */}
-                        <div className={`service-row ${hoveredService && hoveredService !== 'agent_session' ? 'dimmed' : ''}`}>
-                            <div className="service-header">
-                                <div className={`service-indicator ${COLORS.agent_session.name}`}></div>
-                                <div className="service-label-section">
-                                    <span className="service-label">
-                                        AGENT SESSION
-                                        <span className="service-sublabel"></span>
-                                    </span>
-                                    <svg className="info-icon" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                        <div className={`service-card ${hoveredService && hoveredService !== 'agent_session' ? 'dimmed' : ''}`}>
+                            <div className="service-card-header">
+                                <div className="service-icon-wrapper">
+                                    <svg className="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
                                     </svg>
-                                    <span className="service-badge">BILLED BY AGORA</span>
                                 </div>
-                                <div></div>
-                                <div className="service-content">
-                                    <select
-                                        value={`${formData.conversational_ai.provider}|${formData.conversational_ai.model}`}
-                                        onChange={(e) => handleModelChange('conversational_ai', e.target.value)}
-                                    >
-                                        {PROVIDERS.conversational_ai.providers.map(provider => (
-                                            provider.models.map(model => (
-                                                <option key={`${provider.id}|${model.id}`} value={`${provider.id}|${model.id}`}>
-                                                    {provider.name}{model.name && ` ${model.name}`}    -    {formatModelPrice('conversational_ai', provider, model)}
-                                                </option>
-                                            ))
-                                        ))}
-                                    </select>
+                                <div className="service-info">
+                                    <h3 className="service-title">Agent Session</h3>
+                                    <p className="service-description">Core infrastructure for agent deployment</p>
                                 </div>
-                                <span className="service-cost">${calculatedCosts.agent_session.toFixed(4)}/min</span>
+                                <div className="service-badge">BILLED BY AGORA</div>
                             </div>
-                            <div className="service-description">
-                                Estimated cost to deploy an agent and stream media between an agent and a user over an Agora Channel.
+                            <div className="service-card-content">
+                                <select
+                                    value={`${formData.conversational_ai.provider}|${formData.conversational_ai.model}`}
+                                    onChange={(e) => handleModelChange('conversational_ai', e.target.value)}
+                                    className="service-select"
+                                >
+                                    {PROVIDERS.conversational_ai.providers.map(provider => (
+                                        provider.models.map(model => (
+                                            <option key={`${provider.id}|${model.id}`} value={`${provider.id}|${model.id}`}>
+                                                {provider.name}{model.name && ` ${model.name}`}
+                                            </option>
+                                        ))
+                                    ))}
+                                </select>
+                                <div className="service-cost">${calculatedCosts.agent_session.toFixed(4)}/min</div>
                             </div>
                         </div>
 
                         {/* LLM */}
-                        <div className={`service-row ${hoveredService && hoveredService !== 'llm' ? 'dimmed' : ''}`}>
-                            <div className="service-header">
-                                <div className={`service-indicator ${COLORS.llm.name}`}></div>
-                                <div className="service-label-section">
-                                    <span className="service-label">
-                                        LLM
-                                        <span className="service-sublabel">(LARGE LANGUAGE MODEL)</span>
-                                    </span>
-                                    <svg className="info-icon" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                        <div className={`service-card ${hoveredService && hoveredService !== 'llm' ? 'dimmed' : ''}`}>
+                            <div className="service-card-header">
+                                <div className="service-icon-wrapper">
+                                    <svg className="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M9 12l2 2 4-4"/>
+                                        <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c.39 0 .78.02 1.17.06"/>
                                     </svg>
                                 </div>
-                                <div></div>
-                                <div className="service-content">
-                                    <select
-                                        value={`${formData.llm.provider}|${formData.llm.model}`}
-                                        onChange={(e) => handleModelChange('llm', e.target.value)}
-                                    >
-                                        <option value="|">Choose a model</option>
-                                        {PROVIDERS.llm.providers.map(provider => (
-                                            provider.models.map(model => (
-                                                <option key={`${provider.id}|${model.id}`} value={`${provider.id}|${model.id}`}>
-                                                    {provider.name}{model.name && ` ${model.name}`}    -    {formatModelPrice('llm', provider, model)}
-                                                </option>
-                                            ))
-                                        ))}
-                                    </select>
+                                <div className="service-info">
+                                    <h3 className="service-title">LLM</h3>
+                                    <p className="service-description">Large Language Model</p>
                                 </div>
-                                <span className="service-cost">${calculatedCosts.llm.toFixed(4)}/min</span>
+                            </div>
+                            <div className="service-card-content">
+                                <select
+                                    value={`${formData.llm.provider}|${formData.llm.model}`}
+                                    onChange={(e) => handleModelChange('llm', e.target.value)}
+                                    className="service-select"
+                                >
+                                    <option value="|">Choose a model</option>
+                                    {PROVIDERS.llm.providers.map(provider => (
+                                        provider.models.map(model => (
+                                            <option key={`${provider.id}|${model.id}`} value={`${provider.id}|${model.id}`}>
+                                                {provider.name}{model.name && ` ${model.name}`}
+                                            </option>
+                                        ))
+                                    ))}
+                                </select>
+                                <div className="service-cost">${calculatedCosts.llm.toFixed(4)}/min</div>
                             </div>
                         </div>
 
                         {/* STT */}
-                        <div className={`service-row ${isSTTDisabled ? 'disabled' : ''} ${hoveredService && hoveredService !== 'stt' ? 'dimmed' : ''}`}>
-                            <div className="service-header">
-                                <div className={`service-indicator ${COLORS.stt.name}`}></div>
-                                <div className="service-label-section">
-                                    <span className="service-label">
-                                        STT
-                                        <span className="service-sublabel">(SPEECH-TO-TEXT)</span>
-                                    </span>
-                                    <svg className="info-icon" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                        <div className={`service-card ${isSTTDisabled ? 'disabled' : ''} ${hoveredService && hoveredService !== 'stt' ? 'dimmed' : ''}`}>
+                            <div className="service-card-header">
+                                <div className="service-icon-wrapper">
+                                    <svg className="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                        <line x1="12" y1="19" x2="12" y2="23"/>
+                                        <line x1="8" y1="23" x2="16" y2="23"/>
                                     </svg>
                                 </div>
-                                <div></div>
-                                <div className="service-content">
-                                    <select
-                                        value={`${formData.stt.provider}|${formData.stt.model}`}
-                                        onChange={(e) => handleModelChange('stt', e.target.value)}
-                                        disabled={isSTTDisabled}
-                                    >
-                                        <option value="|">{isSTTDisabled ? 'Included in Agent Session' : 'Choose a model'}</option>
-                                        {PROVIDERS.stt.providers.map(provider => (
-                                            provider.models.map(model => (
-                                                <option key={`${provider.id}|${model.id}`} value={`${provider.id}|${model.id}`}>
-                                                    {provider.name}{model.name && ` ${model.name}`}    -    {formatModelPrice('stt', provider, model)}
-                                                </option>
-                                            ))
-                                        ))}
-                                    </select>
+                                <div className="service-info">
+                                    <h3 className="service-title">STT</h3>
+                                    <p className="service-description">Speech-to-Text</p>
                                 </div>
-                                <span className="service-cost">${isSTTDisabled ? '0.0000' : calculatedCosts.stt.toFixed(4)}/min</span>
+                            </div>
+                            <div className="service-card-content">
+                                <select
+                                    value={`${formData.stt.provider}|${formData.stt.model}`}
+                                    onChange={(e) => handleModelChange('stt', e.target.value)}
+                                    className="service-select"
+                                    disabled={isSTTDisabled}
+                                >
+                                    <option value="|">{isSTTDisabled ? 'Included in Agent Session' : 'Choose a model'}</option>
+                                    {PROVIDERS.stt.providers.map(provider => (
+                                        provider.models.map(model => (
+                                            <option key={`${provider.id}|${model.id}`} value={`${provider.id}|${model.id}`}>
+                                                {provider.name}{model.name && ` ${model.name}`}
+                                            </option>
+                                        ))
+                                    ))}
+                                </select>
+                                <div className="service-cost">${isSTTDisabled ? '0.0000' : calculatedCosts.stt.toFixed(4)}/min</div>
                             </div>
                         </div>
 
                         {/* TTS */}
-                        <div className={`service-row ${hoveredService && hoveredService !== 'tts' ? 'dimmed' : ''}`}>
-                            <div className="service-header">
-                                <div className={`service-indicator ${COLORS.tts.name}`}></div>
-                                <div className="service-label-section">
-                                    <span className="service-label">
-                                        TTS
-                                        <span className="service-sublabel">(TEXT-TO-SPEECH)</span>
-                                    </span>
-                                    <svg className="info-icon" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                        <div className={`service-card ${hoveredService && hoveredService !== 'tts' ? 'dimmed' : ''}`}>
+                            <div className="service-card-header">
+                                <div className="service-icon-wrapper">
+                                    <svg className="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
                                     </svg>
                                 </div>
-                                <div></div>
-                                <div className="service-content">
-                                    <select
-                                        value={`${formData.tts.provider}|${formData.tts.model}`}
-                                        onChange={(e) => handleModelChange('tts', e.target.value)}
-                                    >
-                                        <option value="|">Choose a model</option>
-                                        {PROVIDERS.tts.providers.map(provider => (
-                                            provider.models.map(model => (
-                                                <option key={`${provider.id}|${model.id}`} value={`${provider.id}|${model.id}`}>
-                                                    {provider.name}{model.name && ` ${model.name}`}    -    {formatModelPrice('tts', provider, model)}
-                                                </option>
-                                            ))
-                                        ))}
-                                    </select>
+                                <div className="service-info">
+                                    <h3 className="service-title">TTS</h3>
+                                    <p className="service-description">Text-to-Speech</p>
                                 </div>
-                                <span className="service-cost">${calculatedCosts.tts.toFixed(4)}/min</span>
+                            </div>
+                            <div className="service-card-content">
+                                <select
+                                    value={`${formData.tts.provider}|${formData.tts.model}`}
+                                    onChange={(e) => handleModelChange('tts', e.target.value)}
+                                    className="service-select"
+                                >
+                                    <option value="|">Choose a model</option>
+                                    {PROVIDERS.tts.providers.map(provider => (
+                                        provider.models.map(model => (
+                                            <option key={`${provider.id}|${model.id}`} value={`${provider.id}|${model.id}`}>
+                                                {provider.name}{model.name && ` ${model.name}`}
+                                            </option>
+                                        ))
+                                    ))}
+                                </select>
+                                <div className="service-cost">${calculatedCosts.tts.toFixed(4)}/min</div>
                             </div>
                         </div>
 
                         {/* AI Avatar */}
-                        <div className={`service-row ${hoveredService && hoveredService !== 'ai_avatar' ? 'dimmed' : ''}`}>
-                            <div className="service-header">
-                                <div className={`service-indicator ${COLORS.ai_avatar.name}`}></div>
-                                <div className="service-label-section">
-                                    <span className="service-label">
-                                        AI Avatar
-                                        <span className="service-sublabel">(DIGITAL HUMAN)</span>
-                                    </span>
-                                    <svg className="info-icon" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                        <div className={`service-card ${hoveredService && hoveredService !== 'ai_avatar' ? 'dimmed' : ''}`}>
+                            <div className="service-card-header">
+                                <div className="service-icon-wrapper">
+                                    <svg className="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="12" cy="7" r="4"/>
                                     </svg>
                                 </div>
-                                <div></div>
-                                <div className="service-content">
-                                    <select
-                                        value={`${formData.ai_avatar.provider}|${formData.ai_avatar.model}`}
-                                        onChange={(e) => handleModelChange('ai_avatar', e.target.value)}
-                                    >
-                                        <option value="|">Choose a model</option>
-                                        {PROVIDERS.ai_avatar.providers.map(provider => (
-                                            provider.models.map(model => (
-                                                <option key={`${provider.id}|${model.id}`} value={`${provider.id}|${model.id}`}>
-                                                    {provider.name}{model.name && ` ${model.name}`}    -    {formatModelPrice('ai_avatar', provider, model)}
-                                                </option>
-                                            ))
-                                        ))}
-                                    </select>
+                                <div className="service-info">
+                                    <h3 className="service-title">AI Avatar</h3>
+                                    <p className="service-description">Digital Human</p>
                                 </div>
-                                <span className="service-cost">${calculatedCosts.ai_avatar.toFixed(4)}/min</span>
+                            </div>
+                            <div className="service-card-content">
+                                <select
+                                    value={`${formData.ai_avatar.provider}|${formData.ai_avatar.model}`}
+                                    onChange={(e) => handleModelChange('ai_avatar', e.target.value)}
+                                    className="service-select"
+                                >
+                                    <option value="|">Choose a model</option>
+                                    {PROVIDERS.ai_avatar.providers.map(provider => (
+                                        provider.models.map(model => (
+                                            <option key={`${provider.id}|${model.id}`} value={`${provider.id}|${model.id}`}>
+                                                {provider.name}{model.name && ` ${model.name}`}
+                                            </option>
+                                        ))
+                                    ))}
+                                </select>
+                                <div className="service-cost">${calculatedCosts.ai_avatar.toFixed(4)}/min</div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Total Section */}
-                    <div className="total-section">
-                        <div className="total-label">
-                            TOTAL ESTIMATED COST
-                            <svg className="info-icon" viewBox="0 0 20 20" fill="currentColor">
-                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                            </svg>
-                        </div>
-                        <div className="total-cost">${calculatedCosts.total.toFixed(4)}/min</div>
-                    </div>
+                    {/* Cost Breakdown Chart */}
+                    <div className="cost-breakdown">
+                        <div className="chart-container">
+                            <div className="circular-chart">
+                                <svg viewBox="0 0 100 100" className="progress-ring">
+                                    {barChartData.map((segment, index) => {
+                                        const radius = 45;
+                                        const circumference = 2 * Math.PI * radius;
+                                        const startOffset = index === 0 ? 0 :
+                                            barChartData.slice(0, index).reduce((sum, s) => sum + (s.percentage / 100) * circumference, 0);
+                                        const strokeDasharray = `${(segment.percentage / 100) * circumference} ${circumference}`;
 
-                    {/* Bar Chart */}
-                    <div className="bar-chart-container">
-                        <div className="bar-chart">
-                            {barChartData.map((segment) => (
-                                <div
-                                    key={segment.service}
-                                    className={`bar-segment ${segment.color.name}`}
-                                    style={{ width: `${segment.percentage}%` }}
-                                    onMouseEnter={() => setHoveredService(segment.service)}
-                                    onMouseLeave={() => setHoveredService(null)}
-                                />
-                            ))}
+                                        return (
+                                            <circle
+                                                key={segment.service}
+                                                cx="50"
+                                                cy="50"
+                                                r={radius}
+                                                fill="none"
+                                                stroke={segment.color.hex}
+                                                strokeWidth="6"
+                                                strokeDasharray={strokeDasharray}
+                                                strokeDashoffset={-startOffset}
+                                                className="chart-segment"
+                                                onMouseEnter={() => setHoveredService(segment.service)}
+                                                onMouseLeave={() => setHoveredService(null)}
+                                            />
+                                        );
+                                    })}
+                                </svg>
+                                <div className="chart-center">
+                                    <div className="total-cost">${calculatedCosts.total.toFixed(4)}/min</div>
+                                    <div className="total-label">Total Cost</div>
+                                </div>
+                            </div>
+
+                            <div className="chart-legend">
+                                {barChartData.map((segment) => (
+                                    <div
+                                        key={segment.service}
+                                        className={`legend-item ${hoveredService === segment.service ? 'highlighted' : ''}`}
+                                        onMouseEnter={() => setHoveredService(segment.service)}
+                                        onMouseLeave={() => setHoveredService(null)}
+                                    >
+                                        <div
+                                            className="legend-color"
+                                            style={{ backgroundColor: segment.color.hex }}
+                                        ></div>
+                                        <span className="legend-label">
+                                            {segment.service.replace('_', ' ').toUpperCase()}
+                                        </span>
+                                        <span className="legend-value">${segment.cost.toFixed(4)}/min</span>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
