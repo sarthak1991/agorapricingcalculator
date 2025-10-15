@@ -338,7 +338,7 @@ const PROVIDERS = {
                         id: 'default',
                         name: '',
                         pricingUnit: 'per minute',
-                        unitPrice: 0.05,
+                        unitPrice: 0.10,
                         notes: '$3 for 60 minutes (akool.com) [Standard Avatar]'
                     }
                 ]
@@ -351,7 +351,7 @@ const PROVIDERS = {
                         id: 'default',
                         name: '',
                         pricingUnit: 'per minute',
-                        unitPrice: 1.00,
+                        unitPrice: 0.10,
                         notes: '$99/month for 100 credits (1 credit = 1 min) (heygen.com)Interactive Avatar (Pro API Plan)'
                     }
                 ]
