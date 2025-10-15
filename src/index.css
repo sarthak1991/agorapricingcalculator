@@ -123,20 +123,15 @@
   --shadow-secondary: 0 10px 40px rgba(217, 70, 239, 0.3);
 
   /* App-specific Colors */
-  --bg-primary: linear-gradient(135deg, var(--primary-50) 0%, var(--gray-50) 50%, var(--accent-50) 100%);
-  --bg-secondary: linear-gradient(135deg, var(--primary-100) 0%, rgba(255, 255, 255, 0.8) 50%, var(--secondary-100) 100%);
-  --bg-card: rgba(255, 255, 255, 0.1);
-  --bg-card-hover: rgba(255, 255, 255, 0.2);
-  --text-primary: var(--gray-900);
-  --text-secondary: var(--gray-600);
-  --text-tertiary: var(--gray-500);
-  --accent-cyan: var(--primary-500);
-  --accent-yellow: var(--accent-400);
-  --accent-green: var(--success-500);
-  --accent-orange: var(--warning-500);
-  --accent-purple: var(--secondary-500);
-  --border-color: rgba(255, 255, 255, 0.2);
-  --border-color-light: rgba(255, 255, 255, 0.1);
+  --bg-primary: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-tertiary: #94a3b8;
+  --accent-cyan: #0ea5e9;
+  --accent-yellow: #facc15;
+  --accent-green: #22c55e;
+  --accent-orange: #f59e0b;
+  --accent-purple: #d946ef;
 }
 
 * {
@@ -152,7 +147,7 @@ body {
   font-weight: var(--font-normal);
   line-height: var(--leading-normal);
   color: var(--text-primary);
-  background: var(--bg-primary);
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-synthesis: none;
