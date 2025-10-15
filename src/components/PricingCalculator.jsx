@@ -20,7 +20,7 @@ const PROVIDERS = {
                 models: [
                     {
                         id: 'default',
-                        name: 'Default',
+                        name: '',
                         pricingUnit: 'per min',
                         unitPrice: 0.02749,
                         notes: 'With ARES ASR\nIncludes: Audio RTC (0.00099/min) + Conversational AI Engine Audio Basic Task (0.0099/min) + ARES ASR Task (0.0166/min)\nTotal: 0.02749 USD/min'
@@ -33,7 +33,7 @@ const PROVIDERS = {
                 models: [
                     {
                         id: 'default',
-                        name: 'Default',
+                        name: '',
                         pricingUnit: 'per min',
                         unitPrice: 0.01089,
                         notes: 'BYOK (Bring Your Own Key)\nWhat\'s included: Audio RTC (user) + Conversational AI Engine Audio Basic Task\n\nTotal per min = 0.00099 + 0.0099 = 0.01089 USD/min'
@@ -46,7 +46,7 @@ const PROVIDERS = {
                 models: [
                     {
                         id: 'default',
-                        name: 'Default',
+                        name: '',
                         pricingUnit: 'per min',
                         unitPrice: 0.01488,
                         notes: 'BYOK + AI Avatar (720p video)\nWhat\'s included:\nVideo HD RTC for user: 0.00399\nAudio RTC for avatar: 0.00099\nConversational AI Engine Audio Basic Task: 0.0099\n\nTotal per min = 0.00399 + 0.00099 + 0.0099 = 0.01488 USD/min\n\nAvatar vendor charges (HeyGen, Akool, etc.) billed separately via BYOK.'
@@ -217,7 +217,7 @@ const PROVIDERS = {
                 models: [
                     {
                         id: 'default',
-                        name: 'Default',
+                        name: '',
                         pricingUnit: 'per min',
                         unitPrice: 0.0166,
                         notes: 'Agora built-in ASR (only the ASR component cost)'
@@ -267,7 +267,7 @@ const PROVIDERS = {
                 models: [
                     {
                         id: 'default',
-                        name: 'Default',
+                        name: '',
                         pricingUnit: 'per 1M chars',
                         unitPrice: 16,
                         notes: 'Standard Neural; custom voices cost more.'
@@ -280,7 +280,7 @@ const PROVIDERS = {
                 models: [
                     {
                         id: 'default',
-                        name: 'Default',
+                        name: '',
                         pricingUnit: 'per 1M chars',
                         unitPrice: 150,
                         notes: 'Starter plan; $0.15 per 1K chars.'
@@ -293,7 +293,7 @@ const PROVIDERS = {
                 models: [
                     {
                         id: 'default',
-                        name: 'Default',
+                        name: '',
                         pricingUnit: 'per 1M chars',
                         unitPrice: 150,
                         notes: 'Starter plan; 1 char = 1 credit.'
@@ -306,7 +306,7 @@ const PROVIDERS = {
                 models: [
                     {
                         id: 'default',
-                        name: 'Default',
+                        name: '',
                         pricingUnit: 'per 1M chars',
                         unitPrice: 15,
                         notes: 'Applies to gpt-4o-mini-tts and tts-1.'
@@ -319,7 +319,7 @@ const PROVIDERS = {
                 models: [
                     {
                         id: 'default',
-                        name: 'Default',
+                        name: '',
                         pricingUnit: 'per 1M chars',
                         unitPrice: 150,
                         notes: 'Starter plan; voice cloning & speech-to-speech available.'
@@ -336,7 +336,7 @@ const PROVIDERS = {
                 models: [
                     {
                         id: 'default',
-                        name: 'Default',
+                        name: '',
                         pricingUnit: 'per minute',
                         unitPrice: 0.05,
                         notes: '$3 for 60 minutes (akool.com) [Standard Avatar]'
@@ -349,7 +349,7 @@ const PROVIDERS = {
                 models: [
                     {
                         id: 'default',
-                        name: 'Default',
+                        name: '',
                         pricingUnit: 'per minute',
                         unitPrice: 1.00,
                         notes: '$99/month for 100 credits (1 credit = 1 min) (heygen.com)Interactive Avatar (Pro API Plan)'
@@ -594,7 +594,7 @@ const PricingCalculator = () => {
                                         {PROVIDERS.conversational_ai.providers.map(provider => (
                                             provider.models.map(model => (
                                                 <option key={`${provider.id}|${model.id}`} value={`${provider.id}|${model.id}`}>
-                                                    {provider.name}    -    {formatModelPrice('conversational_ai', provider, model)}
+                                                    {provider.name}{model.name && ` ${model.name}`}    -    {formatModelPrice('conversational_ai', provider, model)}
                                                 </option>
                                             ))
                                         ))}
@@ -630,7 +630,7 @@ const PricingCalculator = () => {
                                         {PROVIDERS.llm.providers.map(provider => (
                                             provider.models.map(model => (
                                                 <option key={`${provider.id}|${model.id}`} value={`${provider.id}|${model.id}`}>
-                                                    {provider.name} {model.name}    -    {formatModelPrice('llm', provider, model)}
+                                                    {provider.name}{model.name && ` ${model.name}`}    -    {formatModelPrice('llm', provider, model)}
                                                 </option>
                                             ))
                                         ))}
@@ -664,7 +664,7 @@ const PricingCalculator = () => {
                                         {PROVIDERS.stt.providers.map(provider => (
                                             provider.models.map(model => (
                                                 <option key={`${provider.id}|${model.id}`} value={`${provider.id}|${model.id}`}>
-                                                    {provider.name} {model.name}    -    {formatModelPrice('stt', provider, model)}
+                                                    {provider.name}{model.name && ` ${model.name}`}    -    {formatModelPrice('stt', provider, model)}
                                                 </option>
                                             ))
                                         ))}
@@ -697,7 +697,7 @@ const PricingCalculator = () => {
                                         {PROVIDERS.tts.providers.map(provider => (
                                             provider.models.map(model => (
                                                 <option key={`${provider.id}|${model.id}`} value={`${provider.id}|${model.id}`}>
-                                                    {provider.name} {model.name}    -    {formatModelPrice('tts', provider, model)}
+                                                    {provider.name}{model.name && ` ${model.name}`}    -    {formatModelPrice('tts', provider, model)}
                                                 </option>
                                             ))
                                         ))}
@@ -730,7 +730,7 @@ const PricingCalculator = () => {
                                         {PROVIDERS.ai_avatar.providers.map(provider => (
                                             provider.models.map(model => (
                                                 <option key={`${provider.id}|${model.id}`} value={`${provider.id}|${model.id}`}>
-                                                    {provider.name} {model.name}    -    {formatModelPrice('ai_avatar', provider, model)}
+                                                    {provider.name}{model.name && ` ${model.name}`}    -    {formatModelPrice('ai_avatar', provider, model)}
                                                 </option>
                                             ))
                                         ))}
