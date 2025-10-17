@@ -315,15 +315,19 @@
 }
 
 .div4 {
-  height: 120px;
+  min-height: 200px;
+  max-height: 200px;
 }
 
 .div5 {
-  height: 120px;
+  min-height: 200px;
+  max-height: 200px;
 }
 
 .div6 {
-  height: 250px;
+  min-height: 200px;
+  max-height: 200px;
+  overflow-y: auto;
 }
 
 
@@ -343,7 +347,7 @@
   padding: 10px;
   width: 100%;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 45px;
 }
 
 .providers-row {
@@ -353,6 +357,7 @@
   padding: 10px;
   width: 100%;
   justify-content: center;
+  margin-top: 45px;
 }
 
 .service-box {
@@ -606,9 +611,10 @@
 /* New model selection styles */
 .models-selection-display {
   width: 100%;
-  height: 250px;
+  height: 200px;
   font-family: sans-serif;
   overflow: hidden;
+  margin-top: 45px;
 }
 
 .models-columns-container {
@@ -780,6 +786,34 @@
   font-weight: bold;
   z-index: 10;
   display: none;
+}
+
+.section-heading {
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
+  z-index: 5;
+}
+
+/* Mobile adjustments for section headings */
+@media (max-width: 768px) {
+  .section-heading {
+    top: 8px;
+    left: 12px;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 10px;
+  }
 }
 
 /* Modern Button Styles */
@@ -1013,7 +1047,7 @@
     min-height: 40vh;
     border-radius: var(--radius-2xl) !important;
     margin-bottom: 10px;
-    padding: var(--space-4) !important;
+    padding: 16px !important;
   }
 
   .div3 {
@@ -1029,7 +1063,8 @@
   /* Service Boxes (div4) Mobile */
   .div4 {
     height: auto !important;
-    min-height: 120px;
+    min-height: 150px;
+    max-height: none;
     margin-bottom: 10px;
   }
 
@@ -1037,20 +1072,26 @@
     flex-direction: column !important;
     gap: 8px !important;
     padding: 8px !important;
+    margin-top: 35px !important;
   }
 
   .service-box {
     width: 100% !important;
     min-width: auto !important;
-    padding: var(--space-3) !important;
+    padding: 12px !important;
     font-size: var(--text-base) !important;
     text-align: center !important;
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   /* Provider Boxes (div5) Mobile */
   .div5 {
     height: auto !important;
-    min-height: 100px;
+    min-height: 150px;
+    max-height: none;
     margin-bottom: 10px;
   }
 
@@ -1058,26 +1099,34 @@
     flex-direction: column !important;
     gap: 6px !important;
     padding: 6px !important;
+    margin-top: 35px !important;
   }
 
   .provider-box {
     width: 100% !important;
     min-width: auto !important;
-    padding: var(--space-3) !important;
+    padding: 10px !important;
     font-size: var(--text-base) !important;
     text-align: center !important;
+    min-height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   /* Models Section (div6) Mobile */
   .div6 {
     height: auto !important;
-    min-height: 200px;
+    min-height: 150px;
+    max-height: 200px;
     overflow-y: auto;
   }
 
   .models-selection-display {
     height: auto !important;
-    min-height: 200px;
+    min-height: 150px;
+    max-height: none;
+    margin-top: 35px !important;
   }
 
   .models-columns-container {
@@ -1090,8 +1139,10 @@
   }
 
   .model-radio-item {
-    padding: 12px !important;
-    min-height: 50px !important;
+    padding: 10px !important;
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
   }
 
   .model-radio-content {
@@ -1200,7 +1251,7 @@
   }
 
   .div4, .div5, .div6 {
-    padding: 8px !important;
+    padding: 12px !important;
   }
 }
 
@@ -1209,6 +1260,7 @@
   .services-row {
     flex-direction: row !important;
     flex-wrap: wrap !important;
+    margin-top: 45px !important;
   }
 
   .service-box {
@@ -1218,6 +1270,7 @@
   .providers-row {
     flex-direction: row !important;
     flex-wrap: wrap !important;
+    margin-top: 45px !important;
   }
 
   .provider-box {

@@ -555,6 +555,7 @@ function App() {
               <div className="div-label">div2</div>
               <div className="div4">
                 <div className="div-label">div4</div>
+                <div className="section-heading">Select Service</div>
 
                 {/* Services selection */}
                 <div className="services-row">
@@ -580,6 +581,7 @@ function App() {
               </div>
               <div className="div5">
                 <div className="div-label">div5</div>
+                <div className="section-heading">Select Provider</div>
 
                 {/* Providers selection */}
                 <div className="providers-row">
@@ -596,6 +598,7 @@ function App() {
               </div>
               <div className="div6">
                 <div className="div-label">div6</div>
+                <div className="section-heading">Select Model</div>
                 <div className="models-selection-display">
                   {selectedProviderForModels ? (
                     <div className="models-columns-container">
