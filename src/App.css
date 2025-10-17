@@ -42,7 +42,7 @@
   font-size: 50px;
   text-align: center;
   padding: 0;
-  width: 60%;
+  width: 75%;
   margin: auto;
   display: flex;
   flex-direction: row;
@@ -51,7 +51,7 @@
 }
 
 .div2 {
-  flex: 75%;
+  flex: 60%;
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
@@ -65,7 +65,7 @@
 }
 
 .div3 {
-  flex: 25%;
+  flex: 40%;
   background-color: #f20d60;
   display: flex;
   align-items: flex-start;
