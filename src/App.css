@@ -974,3 +974,253 @@
   margin: 0;
   padding: 0;
 }
+
+/* Mobile Responsiveness - Key Breakpoints */
+@media (max-width: 768px) {
+  /* Main Layout Adjustments */
+  .flex-container {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .row-1 {
+    height: auto;
+    min-height: 8vh;
+    padding: 10px 0;
+    font-size: 18px;
+  }
+
+  .row-2 {
+    height: auto;
+    min-height: 92vh;
+    padding: 10px;
+  }
+
+  .placeholder-box {
+    flex-direction: column !important;
+    width: 95% !important;
+    height: auto !important;
+    min-height: 85vh;
+    padding: 10px;
+    margin: 0 auto;
+  }
+
+  /* Stack div2 and div3 vertically on mobile */
+  .div2 {
+    flex: none !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 40vh;
+    border-radius: var(--radius-2xl) !important;
+    margin-bottom: 10px;
+    padding: var(--space-4) !important;
+  }
+
+  .div3 {
+    flex: none !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 45vh;
+    border-radius: var(--radius-2xl) !important;
+    margin: 0;
+    padding: var(--space-4) !important;
+  }
+
+  /* Service Boxes (div4) Mobile */
+  .div4 {
+    height: auto !important;
+    min-height: 120px;
+    margin-bottom: 10px;
+  }
+
+  .services-row {
+    flex-direction: column !important;
+    gap: 8px !important;
+    padding: 8px !important;
+  }
+
+  .service-box {
+    width: 100% !important;
+    min-width: auto !important;
+    padding: var(--space-3) !important;
+    font-size: var(--text-base) !important;
+    text-align: center !important;
+  }
+
+  /* Provider Boxes (div5) Mobile */
+  .div5 {
+    height: auto !important;
+    min-height: 100px;
+    margin-bottom: 10px;
+  }
+
+  .providers-row {
+    flex-direction: column !important;
+    gap: 6px !important;
+    padding: 6px !important;
+  }
+
+  .provider-box {
+    width: 100% !important;
+    min-width: auto !important;
+    padding: var(--space-3) !important;
+    font-size: var(--text-base) !important;
+    text-align: center !important;
+  }
+
+  /* Models Section (div6) Mobile */
+  .div6 {
+    height: auto !important;
+    min-height: 200px;
+    overflow-y: auto;
+  }
+
+  .models-selection-display {
+    height: auto !important;
+    min-height: 200px;
+  }
+
+  .models-columns-container {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  .models-column {
+    width: 100% !important;
+  }
+
+  .model-radio-item {
+    padding: 12px !important;
+    min-height: 50px !important;
+  }
+
+  .model-radio-content {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+  }
+
+  .model-radio-price-container {
+    align-self: flex-end !important;
+  }
+
+  /* Service Breakdown Mobile */
+  .service-breakdown {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .service-item {
+    min-height: 60px !important;
+    max-height: none !important;
+    height: auto !important;
+    padding: 12px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+  }
+
+  .service-info {
+    width: 100% !important;
+    text-align: left !important;
+  }
+
+  .service-total {
+    align-self: flex-end !important;
+  }
+
+  /* Typography Mobile Adjustments */
+  .grand-total-amount {
+    font-size: 32px !important;
+  }
+
+  .stat-number {
+    font-size: 20px !important;
+  }
+
+  /* Selected Providers Grid Mobile */
+  .selected-providers-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  .selected-provider-item {
+    padding: 12px !important;
+    text-align: left !important;
+  }
+
+  /* No Selections State Mobile */
+  .no-selections {
+    padding: 20px !important;
+  }
+
+  .no-selection-text {
+    font-size: 14px !important;
+  }
+
+  .no-models-selected {
+    padding: 20px !important;
+  }
+
+  .no-models-text {
+    font-size: 14px !important;
+  }
+
+  /* Buttons Mobile */
+  .btn-primary, .btn-secondary {
+    width: 100% !important;
+    padding: var(--space-4) !important;
+    text-align: center !important;
+  }
+
+  /* Form Elements Mobile */
+  .calculator-input, .calculator-select {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    padding: var(--space-4) !important;
+  }
+}
+
+/* Small Mobile Phones (320px - 480px) */
+@media (max-width: 480px) {
+  .service-box, .provider-box {
+    font-size: var(--text-sm) !important;
+    padding: var(--space-2) var(--space-3) !important;
+  }
+
+  .grand-total-amount {
+    font-size: 28px !important;
+  }
+
+  .model-radio-name {
+    font-size: 11px !important;
+  }
+
+  .service-name {
+    font-size: 11px !important;
+  }
+
+  .div4, .div5, .div6 {
+    padding: 8px !important;
+  }
+}
+
+/* Large Mobile Phones (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .services-row {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+  }
+
+  .service-box {
+    width: calc(50% - 4px) !important;
+  }
+
+  .providers-row {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+  }
+
+  .provider-box {
+    width: calc(50% - 3px) !important;
+  }
+}
