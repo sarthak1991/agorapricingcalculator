@@ -14,41 +14,15 @@ const PROVIDERS = {
     agent_session: {
         providers: [
             {
-                id: 'with-ares-asr',
-                name: 'With Ares ASR',
+                id: 'audio-basic-task',
+                name: 'Audio Basic Task',
                 models: [
                     {
                         id: 'default',
                         name: 'Default',
                         pricingUnit: 'per min',
-                        unitPrice: 0.0275,
-                        notes: 'Agent Session with included Ares ASR'
-                    }
-                ]
-            },
-            {
-                id: 'byok',
-                name: 'BYOK',
-                models: [
-                    {
-                        id: 'default',
-                        name: 'Default',
-                        pricingUnit: 'per min',
-                        unitPrice: 0.0109,
-                        notes: 'BYOK (Bring Your Own Key)'
-                    }
-                ]
-            },
-            {
-                id: 'byok-avatar',
-                name: 'BYOK + Avatar AI',
-                models: [
-                    {
-                        id: 'default',
-                        name: 'Default',
-                        pricingUnit: 'per min',
-                        unitPrice: 0.0149,
-                        notes: 'BYOK + Avatar AI'
+                        unitPrice: 0.0099,
+                        notes: 'Audio Basic Task pricing'
                     }
                 ]
             }
@@ -337,8 +311,8 @@ const PROVIDERS = {
                         id: 'default',
                         name: 'Default',
                         pricingUnit: 'per minute',
-                        unitPrice: 0.05,
-                        notes: '$3 for 60 minutes (akool.com) [Standard Avatar]'
+                        unitPrice: 0.1000,
+                        notes: '$6 for 60 minutes (akool.com) [Standard Avatar]'
                     }
                 ]
             },
@@ -350,8 +324,8 @@ const PROVIDERS = {
                         id: 'default',
                         name: 'Default',
                         pricingUnit: 'per minute',
-                        unitPrice: 1.00,
-                        notes: '$99/month for 100 credits (1 credit = 1 min) (heygen.com) Interactive Avatar (Pro API Plan)'
+                        unitPrice: 0.1000,
+                        notes: '$6 for 60 minutes (updated pricing)'
                     }
                 ]
             }
@@ -362,7 +336,7 @@ const PROVIDERS = {
 const PricingCalculator = () => {
     const [hoveredService, setHoveredService] = useState(null);
     const [formData, setFormData] = useState({
-        agent_session: { provider: 'byok', model: 'default' },
+        agent_session: { provider: 'audio-basic-task', model: 'default' },
         asr: { provider: 'ares-agora', model: 'default' },
         llm: { provider: 'openai', model: 'gpt-4o-mini' },
         tts: { provider: 'microsoft-azure-speech', model: 'default' },
@@ -414,7 +388,7 @@ const PricingCalculator = () => {
         }
 
         // ASR
-        if (formData.agent_session.provider !== 'with-ares-asr' && formData.asr.provider && formData.asr.model) {
+        if (formData.agent_session.provider !== 'audio-basic-task' && formData.asr.provider && formData.asr.model) {
             const provider = PROVIDERS.asr.providers.find(p => p.id === formData.asr.provider);
             const model = provider?.models.find(m => m.id === formData.asr.model);
             if (model) {
@@ -477,6 +451,17 @@ const PricingCalculator = () => {
         return data;
     }, [calculatedCosts]);
 
+    const getDisplayName = (provider, model, service) => {
+        // If model has a specific name that's not "Default", use it
+        if (model.name && model.name !== 'Default') {
+            return model.name;
+        }
+
+        // If model name is "Default" or empty, generate name from provider and service
+        const serviceDisplayName = service.toUpperCase().replace('_', ' ');
+        return `${provider.name} ${serviceDisplayName}`;
+    };
+
     const exportToExcel = () => {
         const exportData = [
             ['Service Type', 'Provider', 'Model', 'Cost per Minute'],
@@ -489,7 +474,7 @@ const PricingCalculator = () => {
                 exportData.push([
                     service.toUpperCase().replace('_', ' '),
                     provider.name,
-                    model.name,
+                    getDisplayName(provider, model, service),
                     `$${calculatedCosts[service]?.toFixed(4) || 0}/min`
                 ]);
             }

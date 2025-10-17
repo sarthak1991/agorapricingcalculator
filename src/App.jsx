@@ -7,41 +7,15 @@ const PROVIDERS = {
     agent_session: {
         providers: [
             {
-                id: 'with-ares-asr',
-                name: 'With Ares ASR',
+                id: 'audio-basic-task',
+                name: 'Audio Basic Task',
                 models: [
                     {
                         id: 'default',
                         name: 'Default',
                         pricingUnit: 'per min',
-                        unitPrice: 0.0275,
-                        notes: 'Agent Session with included Ares ASR'
-                    }
-                ]
-            },
-            {
-                id: 'byok',
-                name: 'BYOK',
-                models: [
-                    {
-                        id: 'default',
-                        name: 'Default',
-                        pricingUnit: 'per min',
-                        unitPrice: 0.0109,
-                        notes: 'BYOK (Bring Your Own Key)'
-                    }
-                ]
-            },
-            {
-                id: 'byok-avatar',
-                name: 'BYOK + Avatar AI',
-                models: [
-                    {
-                        id: 'default',
-                        name: 'Default',
-                        pricingUnit: 'per min',
-                        unitPrice: 0.0149,
-                        notes: 'BYOK + Avatar AI'
+                        unitPrice: 0.0099,
+                        notes: 'Audio Basic Task pricing'
                     }
                 ]
             }
@@ -330,8 +304,8 @@ const PROVIDERS = {
                         id: 'default',
                         name: 'Default',
                         pricingUnit: 'per minute',
-                        unitPrice: 0.05,
-                        notes: '$3 for 60 minutes (akool.com) [Standard Avatar]'
+                        unitPrice: 0.1000,
+                        notes: '$6 for 60 minutes (akool.com) [Standard Avatar]'
                     }
                 ]
             },
@@ -343,8 +317,8 @@ const PROVIDERS = {
                         id: 'default',
                         name: 'Default',
                         pricingUnit: 'per minute',
-                        unitPrice: 1.00,
-                        notes: '$99/month for 100 credits (1 credit = 1 min) (heygen.com) Interactive Avatar (Pro API Plan)'
+                        unitPrice: 0.1000,
+                        notes: '$6 for 60 minutes (updated pricing)'
                     }
                 ]
             }
@@ -364,15 +338,7 @@ function App() {
     providerCount: 0
   });
 
-  const isASRDisabled = () => {
-    const agentSessionProvider = selectedProviders['agent_session']?.[0];
-    return agentSessionProvider?.id === 'with-ares-asr';
-  };
-
   const handleServiceClick = (serviceId) => {
-    if (serviceId === 'asr' && isASRDisabled()) {
-      return; // Don't allow ASR selection if With Ares ASR is selected
-    }
     setSelectedService(serviceId);
   };
 
@@ -397,11 +363,21 @@ function App() {
       } else {
         // Replace any existing provider with the new one (single selection)
         updatedProviders = [provider];
-        // Clear previous model selection for this service
-        setSelectedModels(prevModels => ({
-          ...prevModels,
-          [serviceId]: null
-        }));
+
+        // Auto-select model if provider has only one model
+        if (provider.models.length === 1) {
+          setSelectedModels(prevModels => ({
+            ...prevModels,
+            [serviceId]: provider.models[0].id
+          }));
+        } else {
+          // Clear previous model selection for this service
+          setSelectedModels(prevModels => ({
+            ...prevModels,
+            [serviceId]: null
+          }));
+        }
+
         // Auto-open this provider for model selection
         setSelectedProviderForModels(provider);
       }
@@ -411,15 +387,7 @@ function App() {
         [serviceId]: updatedProviders
       };
 
-      // Special logic: If "With Ares ASR" is selected, clear ASR selection
-      if (serviceId === 'agent_session' && provider.id === 'with-ares-asr') {
-        newSelectedProviders.asr = [];
-        setSelectedModels(prevModels => ({
-          ...prevModels,
-          asr: null
-        }));
-      }
-
+      
       // Calculate total pricing
       calculateTotalPricing(newSelectedProviders);
       return newSelectedProviders;
@@ -550,6 +518,17 @@ function App() {
     return price;
   };
 
+  const getDisplayName = (provider, model, serviceId) => {
+    // If model has a specific name that's not "Default", use it
+    if (model.name && model.name !== 'Default') {
+      return model.name;
+    }
+
+    // If model name is "Default" or empty, generate name from provider and service
+    const serviceDisplayName = serviceId.toUpperCase().replace('_', ' ');
+    return `${provider.name} ${serviceDisplayName}`;
+  };
+
   const getDisplayPrice = (price) => {
     return price.toFixed(4);
   };
@@ -583,12 +562,10 @@ function App() {
                     Agent Session
                   </div>
                   <div
-                    className={`service-box ${selectedService === 'asr' ? 'selected' : ''} ${isASRDisabled() ? 'disabled' : ''}`}
+                    className={`service-box ${selectedService === 'asr' ? 'selected' : ''}`}
                     onClick={() => handleServiceClick('asr')}
-                    title={isASRDisabled() ? 'ASR is included with Agent Session - With Ares ASR' : ''}
                   >
                     ASR
-                    {isASRDisabled() && <span className="disabled-indicator">✕</span>}
                   </div>
                   <div className={`service-box ${selectedService === 'llm' ? 'selected' : ''}`} onClick={() => handleServiceClick('llm')}>
                     LLM
@@ -638,7 +615,7 @@ function App() {
                                     onChange={() => handleModelSelect(selectedProviderForModels, model)}
                                   />
                                   <div className="model-radio-content">
-                                    <div className="model-radio-name">{model.name || 'Default'}</div>
+                                    <div className="model-radio-name">{getDisplayName(selectedProviderForModels, model, selectedService)}</div>
                                     <div className="model-radio-price-container">
                                       <div className="model-radio-price">${getDisplayPrice(calculateSingleModelPrice(model))}/minute</div>
                                       <div className="model-radio-unit">{model.pricingUnit}</div>
@@ -673,7 +650,7 @@ function App() {
                                     {provider.name}
                                     <div className="provider-service">{serviceId.toUpperCase().replace('_', ' ')}</div>
                                     {selectedModel && (
-                                      <div className="provider-model">{selectedModel.name}</div>
+                                      <div className="provider-model">{getDisplayName(provider, selectedModel, serviceId)}</div>
                                     )}
                                   </div>
                                 );
@@ -716,7 +693,7 @@ function App() {
                     <div className="service-breakdown">
                       <div className="breakdown-header">Service Breakdown</div>
                       {Object.entries(totalPricing.byService).map(([serviceId, serviceData]) => (
-                        <div key={serviceId} className="service-item">
+                        <div key={serviceId} className={`service-item ${serviceId}`}>
                           <div className="service-info">
                             <div className="service-name">{serviceId.toUpperCase().replace('_', ' ')}</div>
                             <div className="service-providers">{serviceData.providerCount} provider{serviceData.providerCount !== 1 ? 's' : ''}</div>
