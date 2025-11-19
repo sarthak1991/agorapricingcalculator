@@ -12,7 +12,7 @@ const PROVIDERS = {
                 models: [
                     {
                         id: 'default',
-                        name: 'Default',
+                        name: 'Audio Basic Task AGENT VOICE',
                         pricingUnit: 'per min',
                         unitPrice: 0.0099,
                         notes: 'Audio Basic Task pricing'
@@ -323,6 +323,40 @@ const PROVIDERS = {
                 ]
             }
         ]
+    },
+    human_voice: {
+        providers: [
+            {
+                id: 'audio-rtc',
+                name: 'Audio RTC',
+                models: [
+                    {
+                        id: 'default',
+                        name: 'Default',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.00099,
+                        notes: 'Audio RTC pricing'
+                    }
+                ]
+            }
+        ]
+    },
+    ains: {
+        providers: [
+            {
+                id: 'agora-ai-noise-suppression',
+                name: 'Agora AI Noise Suppression',
+                models: [
+                    {
+                        id: 'default',
+                        name: 'Default',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.00059,
+                        notes: 'AI Noise Suppression pricing'
+                    }
+                ]
+            }
+        ]
     }
 };
 
@@ -524,13 +558,19 @@ function App() {
       return model.name;
     }
 
+    // Special case for AINS - model name should just be "AINS"
+    if (serviceId === 'ains') {
+      return 'AINS';
+    }
+
     // If model name is "Default" or empty, generate name from provider and service
     const serviceDisplayName = serviceId.toUpperCase().replace('_', ' ');
     return `${provider.name} ${serviceDisplayName}`;
   };
 
   const getDisplayPrice = (price) => {
-    return price.toFixed(4);
+    // Format price to 5 decimal places for consistency
+    return price.toFixed(5);
   };
 
   const groupModelsIntoColumns = (models) => {
@@ -560,7 +600,13 @@ function App() {
                 {/* Services selection */}
                 <div className="services-row">
                   <div className={`service-box ${selectedService === 'agent_session' ? 'selected' : ''}`} onClick={() => handleServiceClick('agent_session')}>
-                    Agent Session
+                    Agent Voice
+                  </div>
+                  <div className={`service-box ${selectedService === 'human_voice' ? 'selected' : ''}`} onClick={() => handleServiceClick('human_voice')}>
+                    Human Voice
+                  </div>
+                  <div className={`service-box ${selectedService === 'ains' ? 'selected' : ''}`} onClick={() => handleServiceClick('ains')}>
+                    AINS
                   </div>
                   <div
                     className={`service-box ${selectedService === 'asr' ? 'selected' : ''}`}

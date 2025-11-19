@@ -3,11 +3,13 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
 const COLORS = {
-    agent_session: { name: 'purple', hex: '#9333ea' },
-    asr: { name: 'cyan', hex: '#00d9ff' },
-    llm: { name: 'yellow', hex: '#ffd700' },
-    tts: { name: 'green', hex: '#00ff88' },
-    ai_avatar: { name: 'orange', hex: '#ff6b35' }
+    agent_session: { name: 'Coral Red', hex: '#FF6B6B' },
+    human_voice: { name: 'Turquoise', hex: '#4ECDC4' },
+    ains: { name: 'Sunny Yellow', hex: '#FFE66D' },
+    asr: { name: 'Mint Green', hex: '#95E1D3' },
+    llm: { name: 'Salmon Pink', hex: '#F38181' },
+    tts: { name: 'Soft Purple', hex: '#AA96DA' },
+    ai_avatar: { name: 'Golden Orange', hex: '#FCBF49' }
 };
 
 const PROVIDERS = {
@@ -19,7 +21,7 @@ const PROVIDERS = {
                 models: [
                     {
                         id: 'default',
-                        name: 'Default',
+                        name: 'Audio Basic Task AGENT VOICE',
                         pricingUnit: 'per min',
                         unitPrice: 0.0099,
                         notes: 'Audio Basic Task pricing'
@@ -330,6 +332,40 @@ const PROVIDERS = {
                 ]
             }
         ]
+    },
+    human_voice: {
+        providers: [
+            {
+                id: 'audio-rtc',
+                name: 'Audio RTC',
+                models: [
+                    {
+                        id: 'default',
+                        name: 'Default',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.00099,
+                        notes: 'Audio RTC pricing'
+                    }
+                ]
+            }
+        ]
+    },
+    ains: {
+        providers: [
+            {
+                id: 'agora-ai-noise-suppression',
+                name: 'Agora AI Noise Suppression',
+                models: [
+                    {
+                        id: 'default',
+                        name: 'Default',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.00059,
+                        notes: 'AI Noise Suppression pricing'
+                    }
+                ]
+            }
+        ]
     }
 };
 
@@ -340,7 +376,9 @@ const PricingCalculator = () => {
         asr: { provider: 'ares-agora', model: 'default' },
         llm: { provider: 'openai', model: 'gpt-4o-mini' },
         tts: { provider: 'microsoft-azure-speech', model: 'default' },
-        ai_avatar: { provider: 'akool', model: 'default' }
+        ai_avatar: { provider: 'akool', model: 'default' },
+        human_voice: { provider: 'audio-rtc', model: 'default' },
+        ains: { provider: 'agora-ai-noise-suppression', model: 'default' }
     });
 
     const handleModelChange = (service, combinedValue) => {
@@ -375,10 +413,12 @@ const PricingCalculator = () => {
             asr: 0,
             llm: 0,
             tts: 0,
-            ai_avatar: 0
+            ai_avatar: 0,
+            human_voice: 0,
+            ains: 0
         };
 
-        // Agent Session
+        // Agent voice
         if (formData.agent_session.provider && formData.agent_session.model) {
             const provider = PROVIDERS.agent_session.providers.find(p => p.id === formData.agent_session.provider);
             const model = provider?.models.find(m => m.id === formData.agent_session.model);
@@ -424,6 +464,24 @@ const PricingCalculator = () => {
             const model = provider?.models.find(m => m.id === formData.ai_avatar.model);
             if (model) {
                 costs.ai_avatar = model.unitPrice;
+            }
+        }
+
+        // Human Voice
+        if (formData.human_voice.provider && formData.human_voice.model) {
+            const provider = PROVIDERS.human_voice.providers.find(p => p.id === formData.human_voice.provider);
+            const model = provider?.models.find(m => m.id === formData.human_voice.model);
+            if (model) {
+                costs.human_voice = model.unitPrice;
+            }
+        }
+
+        // AINS
+        if (formData.ains.provider && formData.ains.model) {
+            const provider = PROVIDERS.ains.providers.find(p => p.id === formData.ains.provider);
+            const model = provider?.models.find(m => m.id === formData.ains.model);
+            if (model) {
+                costs.ains = model.unitPrice;
             }
         }
 
@@ -475,12 +533,12 @@ const PricingCalculator = () => {
                     service.toUpperCase().replace('_', ' '),
                     provider.name,
                     getDisplayName(provider, model, service),
-                    `$${calculatedCosts[service]?.toFixed(4) || 0}/min`
+                    `$${calculatedCosts[service]?.toFixed(5) || 0}/min`
                 ]);
             }
         });
 
-        exportData.push([], ['Total:', '', '', `$${calculatedCosts.total.toFixed(4)}/min`]);
+        exportData.push([], ['Total:', '', '', `$${calculatedCosts.total.toFixed(5)}/min`]);
 
         const ws = XLSX.utils.aoa_to_sheet(exportData);
         const wb = XLSX.utils.book_new();
