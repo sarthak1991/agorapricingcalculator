@@ -601,9 +601,13 @@ function App() {
 
   const groupModelsIntoColumns = (models) => {
     const columns = [];
-    for (let i = 0; i < models.length; i += 2) {
-      columns.push(models.slice(i, i + 2));
+    const modelsPerColumn = 2;
+
+    // Distribute models evenly across columns
+    for (let i = 0; i < models.length; i += modelsPerColumn) {
+      columns.push(models.slice(i, i + modelsPerColumn));
     }
+
     return columns;
   };
 
