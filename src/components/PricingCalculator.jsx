@@ -231,6 +231,32 @@ const PROVIDERS = {
                         notes: 'Most capable Claude model'
                     }
                 ]
+            },
+            {
+                id: 'openai-speech-to-speech',
+                name: 'OpenAI speech to speech',
+                models: [
+                    {
+                        id: 'gpt-4o-realtime',
+                        name: 'gpt-4o (via Realtime API)',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.30,
+                        notes: 'Speech-to-speech via OpenAI Realtime API'
+                    }
+                ]
+            },
+            {
+                id: 'gemini-speech-to-speech',
+                name: 'Gemini speech to speech',
+                models: [
+                    {
+                        id: 'gemini-2.0-flash-live',
+                        name: 'gemini-2.0-flash-live',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.17,
+                        notes: 'Speech-to-speech via Gemini Live API'
+                    }
+                ]
             }
         ]
     },
@@ -441,10 +467,16 @@ const PricingCalculator = () => {
             const provider = PROVIDERS.llm.providers.find(p => p.id === formData.llm.provider);
             const model = provider?.models.find(m => m.id === formData.llm.model);
             if (model) {
-                const tokens = calculateLLMTokens();
-                const inputCost = (tokens.inputTokens / 1000000) * model.inputPrice;
-                const outputCost = (tokens.outputTokens / 1000000) * model.outputPrice;
-                costs.llm = inputCost + outputCost;
+                if (model.unitPrice) {
+                    // Speech-to-speech models use per-minute pricing
+                    costs.llm = model.unitPrice;
+                } else {
+                    // Traditional LLM models use token-based pricing
+                    const tokens = calculateLLMTokens();
+                    const inputCost = (tokens.inputTokens / 1000000) * model.inputPrice;
+                    const outputCost = (tokens.outputTokens / 1000000) * model.outputPrice;
+                    costs.llm = inputCost + outputCost;
+                }
             }
         }
 
