@@ -398,6 +398,23 @@ function App() {
     providerCount: 0
   });
 
+  // Check if speech-to-speech provider is selected
+  const isSpeechToSpeechSelected = () => {
+    const llmProvider = selectedProviders.llm?.[0];
+    if (!llmProvider) return false;
+
+    const speechToSpeechProviders = ['openai-speech-to-speech', 'gemini-speech-to-speech'];
+    return speechToSpeechProviders.includes(llmProvider.id);
+  };
+
+  // Check if a service should be disabled
+  const isServiceDisabled = (serviceId) => {
+    if (serviceId === 'asr' || serviceId === 'tts') {
+      return isSpeechToSpeechSelected();
+    }
+    return false;
+  };
+
   const handleServiceClick = (serviceId) => {
     setSelectedService(serviceId);
   };
@@ -520,6 +537,11 @@ function App() {
     let providerCount = 0;
 
     Object.entries(providers).forEach(([serviceId, selectedProviders]) => {
+      // Skip disabled services from calculations entirely
+      if (isServiceDisabled(serviceId)) {
+        return;
+      }
+
       if (selectedProviders.length > 0) {
         serviceCount++;
         providerCount += selectedProviders.length;
@@ -639,15 +661,20 @@ function App() {
                     AINS
                   </div>
                   <div
-                    className={`service-box ${selectedService === 'asr' ? 'selected' : ''}`}
-                    onClick={() => handleServiceClick('asr')}
+                    className={`service-box ${selectedService === 'asr' ? 'selected' : ''} ${isServiceDisabled('asr') ? 'disabled' : ''}`}
+                    onClick={() => !isServiceDisabled('asr') && handleServiceClick('asr')}
+                    title={isServiceDisabled('asr') ? "ASR is part of speech-to-speech models and is therefore disabled here" : undefined}
                   >
                     ASR
                   </div>
                   <div className={`service-box ${selectedService === 'llm' ? 'selected' : ''}`} onClick={() => handleServiceClick('llm')}>
                     LLM
                   </div>
-                  <div className={`service-box ${selectedService === 'tts' ? 'selected' : ''}`} onClick={() => handleServiceClick('tts')}>
+                  <div
+                    className={`service-box ${selectedService === 'tts' ? 'selected' : ''} ${isServiceDisabled('tts') ? 'disabled' : ''}`}
+                    onClick={() => !isServiceDisabled('tts') && handleServiceClick('tts')}
+                    title={isServiceDisabled('tts') ? "TTS is part of speech-to-speech models and is therefore disabled here" : undefined}
+                  >
                     TTS
                   </div>
                   <div className={`service-box ${selectedService === 'ai_avatar' ? 'selected' : ''}`} onClick={() => handleServiceClick('ai_avatar')}>
