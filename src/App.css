@@ -505,7 +505,7 @@
   visibility: hidden;
   transform: translateY(8px);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 9999;
+  z-index: 99999;
   padding: 0;
   pointer-events: none;
 }
@@ -981,7 +981,6 @@
   padding: 4px 12px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(14, 165, 233, 0.3);
-  z-index: 5;
 }
 
 /* Mobile adjustments for section headings */
