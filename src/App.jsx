@@ -640,12 +640,11 @@ function App() {
     const isSampleCalculation = !selectedModelId;
 
     if (model.unitPrice && !model.pricingUnit?.includes('chars') && !model.inputPrice && !provider.id.includes('speech-to-speech')) {
-      // Simple unit pricing (ASR, Agent Voice, AI Avatar, AINS)
+      // Simple unit pricing (ASR, Agent Voice, AI Avatar, AINS) - No assumptions
       return (
         <div className="tooltip-content">
           <div className="tooltip-header">
             Simple Unit Pricing
-            {isSampleCalculation && <span className="sample-indicator"> (Based on "{model.name}" model)</span>}
             {!isSampleCalculation && <span className="selected-indicator"> (Selected)</span>}
           </div>
           <div className="tooltip-details">
@@ -657,12 +656,6 @@ function App() {
               <span className="tooltip-label">Unit:</span>
               <span className="tooltip-value">{model.pricingUnit}</span>
             </div>
-          </div>
-          <div className="tooltip-example">
-            <div className="example-title">
-              {isSampleCalculation ? `${model.name} - Select a model to see its calculations:` : 'Selected Model Calculation:'}
-            </div>
-            <div className="example-calc">60 min call = ${(model.unitPrice * 60).toFixed(2)}</div>
           </div>
         </div>
       );
@@ -751,12 +744,11 @@ function App() {
         </div>
       );
     } else if (provider.id.includes('speech-to-speech')) {
-      // Speech-to-speech all-inclusive pricing
+      // Speech-to-speech all-inclusive pricing - No assumptions
       return (
         <div className="tooltip-content">
           <div className="tooltip-header">
             Speech-to-Speech Pricing
-            {isSampleCalculation && <span className="sample-indicator"> (Based on "{model.name}" model)</span>}
             {!isSampleCalculation && <span className="selected-indicator"> (Selected)</span>}
           </div>
           <div className="tooltip-details">
@@ -773,12 +765,7 @@ function App() {
               <span className="tooltip-value">${model.unitPrice.toFixed(2)} per minute</span>
             </div>
           </div>
-          <div className="tooltip-example">
-            <div className="example-title">
-              {isSampleCalculation ? `${model.name} - Select a model to see its calculations:` : 'Selected Model Calculation:'}
-            </div>
-            <div className="example-calc">ASR and TTS are disabled when using speech-to-speech</div>
-          </div>
+          <div className="tooltip-note">ASR and TTS are disabled when using speech-to-speech</div>
         </div>
       );
     }
@@ -867,18 +854,22 @@ function App() {
                     >
                       <div className="provider-content">
                         <span className="provider-name">{provider.name}</span>
-                        <div
-                          className="info-icon"
-                          data-provider-id={provider.id}
-                          data-service-id={selectedService}
-                          aria-label={`Pricing information for ${provider.name}`}
-                          tabIndex="0"
-                        >
-                          ⓘ
-                        </div>
-                      </div>
-                      <div className="provider-tooltip" id={`tooltip-${provider.id}-${selectedService}`}>
-                        {generateTooltipContent(provider, selectedService)}
+                        {(selectedService === 'llm' || selectedService === 'tts') && (
+                          <>
+                            <div
+                              className="info-icon"
+                              data-provider-id={provider.id}
+                              data-service-id={selectedService}
+                              aria-label={`Pricing information for ${provider.name}`}
+                              tabIndex="0"
+                            >
+                              ⓘ
+                            </div>
+                            <div className="provider-tooltip" id={`tooltip-${provider.id}-${selectedService}`}>
+                              {generateTooltipContent(provider, selectedService)}
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
                   ))}
