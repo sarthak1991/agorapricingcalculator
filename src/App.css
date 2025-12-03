@@ -534,6 +534,21 @@
   padding-bottom: 4px;
 }
 
+.sample-indicator {
+  font-size: 10px;
+  color: #666;
+  font-weight: normal;
+  text-transform: none;
+  font-style: italic;
+}
+
+.selected-indicator {
+  font-size: 10px;
+  color: #22c55e;
+  font-weight: normal;
+  text-transform: none;
+}
+
 .tooltip-details {
   display: flex;
   flex-direction: column;

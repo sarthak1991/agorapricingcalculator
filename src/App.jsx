@@ -634,13 +634,20 @@ function App() {
   };
 
   const generateTooltipContent = (provider, serviceId) => {
-    const model = provider.models[0]; // Use first model for tooltip
+    // Get the selected model for this service, or fall back to first model for sample
+    const selectedModelId = selectedModels[serviceId];
+    const model = provider.models.find(m => m.id === selectedModelId) || provider.models[0];
+    const isSampleCalculation = !selectedModelId;
 
     if (model.unitPrice && !model.pricingUnit?.includes('chars') && !model.inputPrice && !provider.id.includes('speech-to-speech')) {
       // Simple unit pricing (ASR, Agent Voice, AI Avatar, AINS)
       return (
         <div className="tooltip-content">
-          <div className="tooltip-header">Simple Unit Pricing</div>
+          <div className="tooltip-header">
+            Simple Unit Pricing
+            {isSampleCalculation && <span className="sample-indicator"> (Based on "{model.name}" model)</span>}
+            {!isSampleCalculation && <span className="selected-indicator"> (Selected)</span>}
+          </div>
           <div className="tooltip-details">
             <div className="tooltip-row">
               <span className="tooltip-label">Rate:</span>
@@ -652,7 +659,9 @@ function App() {
             </div>
           </div>
           <div className="tooltip-example">
-            <div className="example-title">Example:</div>
+            <div className="example-title">
+              {isSampleCalculation ? `${model.name} - Select a model to see its calculations:` : 'Selected Model Calculation:'}
+            </div>
             <div className="example-calc">60 min call = ${(model.unitPrice * 60).toFixed(2)}</div>
           </div>
         </div>
@@ -667,7 +676,11 @@ function App() {
 
       return (
         <div className="tooltip-content">
-          <div className="tooltip-header">Token-Based Pricing</div>
+          <div className="tooltip-header">
+            Token-Based Pricing
+            {isSampleCalculation && <span className="sample-indicator"> (Based on "{model.name}" model)</span>}
+            {!isSampleCalculation && <span className="selected-indicator"> (Selected)</span>}
+          </div>
           <div className="tooltip-details">
             <div className="tooltip-row">
               <span className="tooltip-label">Input tokens:</span>
@@ -692,7 +705,9 @@ function App() {
             </div>
           </div>
           <div className="tooltip-example">
-            <div className="example-title">Calculation:</div>
+            <div className="example-title">
+              {isSampleCalculation ? `${model.name} - Select a model to see its calculations:` : 'Selected Model Calculation:'}
+            </div>
             <div className="example-calc">
               ({inputTokensPerMinute}/1M × ${model.inputPrice}) + ({outputTokensPerMinute}/1M × ${model.outputPrice})
             </div>
@@ -706,7 +721,11 @@ function App() {
 
       return (
         <div className="tooltip-content">
-          <div className="tooltip-header">Character-Based Pricing</div>
+          <div className="tooltip-header">
+            Character-Based Pricing
+            {isSampleCalculation && <span className="sample-indicator"> (Based on "{model.name}" model)</span>}
+            {!isSampleCalculation && <span className="selected-indicator"> (Selected)</span>}
+          </div>
           <div className="tooltip-details">
             <div className="tooltip-row">
               <span className="tooltip-label">Characters:</span>
@@ -722,7 +741,9 @@ function App() {
             </div>
           </div>
           <div className="tooltip-example">
-            <div className="example-title">Example:</div>
+            <div className="example-title">
+              {isSampleCalculation ? `${model.name} - Select a model to see its calculations:` : 'Selected Model Calculation:'}
+            </div>
             <div className="example-calc">
               {charactersPerMinute.toFixed(0)} chars ÷ 1M × ${model.unitPrice}
             </div>
@@ -733,7 +754,11 @@ function App() {
       // Speech-to-speech all-inclusive pricing
       return (
         <div className="tooltip-content">
-          <div className="tooltip-header">Speech-to-Speech Pricing</div>
+          <div className="tooltip-header">
+            Speech-to-Speech Pricing
+            {isSampleCalculation && <span className="sample-indicator"> (Based on "{model.name}" model)</span>}
+            {!isSampleCalculation && <span className="selected-indicator"> (Selected)</span>}
+          </div>
           <div className="tooltip-details">
             <div className="tooltip-row">
               <span className="tooltip-label">Service:</span>
@@ -749,7 +774,9 @@ function App() {
             </div>
           </div>
           <div className="tooltip-example">
-            <div className="example-title">Note:</div>
+            <div className="example-title">
+              {isSampleCalculation ? `${model.name} - Select a model to see its calculations:` : 'Selected Model Calculation:'}
+            </div>
             <div className="example-calc">ASR and TTS are disabled when using speech-to-speech</div>
           </div>
         </div>
