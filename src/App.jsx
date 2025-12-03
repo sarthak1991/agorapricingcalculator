@@ -633,6 +633,150 @@ function App() {
     return columns;
   };
 
+  const generateTooltipContent = (provider, serviceId) => {
+    const model = provider.models[0]; // Use first model for tooltip
+
+    if (model.unitPrice && !model.pricingUnit?.includes('chars') && !model.inputPrice && !provider.id.includes('speech-to-speech')) {
+      // Simple unit pricing (ASR, Agent Voice, AI Avatar, AINS)
+      return (
+        <div className="tooltip-content">
+          <div className="tooltip-header">Simple Unit Pricing</div>
+          <div className="tooltip-details">
+            <div className="tooltip-row">
+              <span className="tooltip-label">Rate:</span>
+              <span className="tooltip-value">${model.unitPrice.toFixed(4)} per minute</span>
+            </div>
+            <div className="tooltip-row">
+              <span className="tooltip-label">Unit:</span>
+              <span className="tooltip-value">{model.pricingUnit}</span>
+            </div>
+          </div>
+          <div className="tooltip-example">
+            <div className="example-title">Example:</div>
+            <div className="example-calc">60 min call = ${(model.unitPrice * 60).toFixed(2)}</div>
+          </div>
+        </div>
+      );
+    } else if (model.inputPrice && model.outputPrice) {
+      // Token-based LLM pricing
+      const inputTokensPerMinute = 77.13;
+      const outputTokensPerMinute = 154.27;
+      const inputCostPerMinute = (inputTokensPerMinute / 1000000) * model.inputPrice;
+      const outputCostPerMinute = (outputTokensPerMinute / 1000000) * model.outputPrice;
+      const totalCostPerMinute = inputCostPerMinute + outputCostPerMinute;
+
+      return (
+        <div className="tooltip-content">
+          <div className="tooltip-header">Token-Based Pricing</div>
+          <div className="tooltip-details">
+            <div className="tooltip-row">
+              <span className="tooltip-label">Input tokens:</span>
+              <span className="tooltip-value">{inputTokensPerMinute} per min</span>
+            </div>
+            <div className="tooltip-row">
+              <span className="tooltip-label">Output tokens:</span>
+              <span className="tooltip-value">{outputTokensPerMinute} per min</span>
+            </div>
+            <div className="tooltip-row">
+              <span className="tooltip-label">Input rate:</span>
+              <span className="tooltip-value">${model.inputPrice} per 1M tokens</span>
+            </div>
+            <div className="tooltip-row">
+              <span className="tooltip-label">Output rate:</span>
+              <span className="tooltip-value">${model.outputPrice} per 1M tokens</span>
+            </div>
+            <div className="tooltip-divider"></div>
+            <div className="tooltip-row total">
+              <span className="tooltip-label">Total/minute:</span>
+              <span className="tooltip-value">${totalCostPerMinute.toFixed(6)}</span>
+            </div>
+          </div>
+          <div className="tooltip-example">
+            <div className="example-title">Calculation:</div>
+            <div className="example-calc">
+              ({inputTokensPerMinute}/1M × ${model.inputPrice}) + ({outputTokensPerMinute}/1M × ${model.outputPrice})
+            </div>
+          </div>
+        </div>
+      );
+    } else if (model.pricingUnit?.includes('chars')) {
+      // Character-based TTS pricing
+      const charactersPerMinute = 30082 / 60; // ~501 chars/min
+      const costPerMinute = (charactersPerMinute / 1000000) * model.unitPrice;
+
+      return (
+        <div className="tooltip-content">
+          <div className="tooltip-header">Character-Based Pricing</div>
+          <div className="tooltip-details">
+            <div className="tooltip-row">
+              <span className="tooltip-label">Characters:</span>
+              <span className="tooltip-value">~{charactersPerMinute.toFixed(0)} per min</span>
+            </div>
+            <div className="tooltip-row">
+              <span className="tooltip-label">Rate:</span>
+              <span className="tooltip-value">${model.unitPrice} per 1M chars</span>
+            </div>
+            <div className="tooltip-row total">
+              <span className="tooltip-label">Cost/minute:</span>
+              <span className="tooltip-value">${costPerMinute.toFixed(6)}</span>
+            </div>
+          </div>
+          <div className="tooltip-example">
+            <div className="example-title">Example:</div>
+            <div className="example-calc">
+              {charactersPerMinute.toFixed(0)} chars ÷ 1M × ${model.unitPrice}
+            </div>
+          </div>
+        </div>
+      );
+    } else if (provider.id.includes('speech-to-speech')) {
+      // Speech-to-speech all-inclusive pricing
+      return (
+        <div className="tooltip-content">
+          <div className="tooltip-header">Speech-to-Speech Pricing</div>
+          <div className="tooltip-details">
+            <div className="tooltip-row">
+              <span className="tooltip-label">Service:</span>
+              <span className="tooltip-value">All-inclusive</span>
+            </div>
+            <div className="tooltip-row">
+              <span className="tooltip-label">Includes:</span>
+              <span className="tooltip-value">ASR + LLM + TTS</span>
+            </div>
+            <div className="tooltip-row">
+              <span className="tooltip-label">Rate:</span>
+              <span className="tooltip-value">${model.unitPrice.toFixed(2)} per minute</span>
+            </div>
+          </div>
+          <div className="tooltip-example">
+            <div className="example-title">Note:</div>
+            <div className="example-calc">ASR and TTS are disabled when using speech-to-speech</div>
+          </div>
+        </div>
+      );
+    }
+
+    // Fallback for unknown pricing types
+    return (
+      <div className="tooltip-content">
+        <div className="tooltip-header">Pricing Information</div>
+        <div className="tooltip-details">
+          <div className="tooltip-row">
+            <span className="tooltip-label">Unit:</span>
+            <span className="tooltip-value">{model.pricingUnit}</span>
+          </div>
+          {model.unitPrice && (
+            <div className="tooltip-row">
+              <span className="tooltip-label">Price:</span>
+              <span className="tooltip-value">${model.unitPrice}</span>
+            </div>
+          )}
+          <div className="tooltip-note">{model.notes}</div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="App">
       <div className="flex-container">
@@ -694,7 +838,21 @@ function App() {
                       className={`provider-box ${isProviderSelected(provider.id, selectedService) ? 'selected' : ''}`}
                       onClick={() => handleProviderClick(provider, selectedService)}
                     >
-                      {provider.name}
+                      <div className="provider-content">
+                        <span className="provider-name">{provider.name}</span>
+                        <div
+                          className="info-icon"
+                          data-provider-id={provider.id}
+                          data-service-id={selectedService}
+                          aria-label={`Pricing information for ${provider.name}`}
+                          tabIndex="0"
+                        >
+                          ⓘ
+                        </div>
+                      </div>
+                      <div className="provider-tooltip" id={`tooltip-${provider.id}-${selectedService}`}>
+                        {generateTooltipContent(provider, selectedService)}
+                      </div>
                     </div>
                   ))}
                 </div>
