@@ -12,7 +12,7 @@ const PROVIDERS = {
                 models: [
                     {
                         id: 'default',
-                        name: 'Default',
+                        name: 'Audio Basic Task AGENT VOICE',
                         pricingUnit: 'per min',
                         unitPrice: 0.0099,
                         notes: 'Audio Basic Task pricing'
@@ -222,6 +222,32 @@ const PROVIDERS = {
                         notes: 'Most capable Claude model'
                     }
                 ]
+            },
+            {
+                id: 'openai-speech-to-speech',
+                name: 'OpenAI speech to speech',
+                models: [
+                    {
+                        id: 'gpt-4o-realtime',
+                        name: 'gpt-4o (via Realtime API)',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.30,
+                        notes: 'Speech-to-speech via OpenAI Realtime API'
+                    }
+                ]
+            },
+            {
+                id: 'gemini-speech-to-speech',
+                name: 'Gemini speech to speech',
+                models: [
+                    {
+                        id: 'gemini-2.0-flash-live',
+                        name: 'gemini-2.0-flash-live',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.17,
+                        notes: 'Speech-to-speech via Gemini Live API'
+                    }
+                ]
             }
         ]
     },
@@ -323,6 +349,40 @@ const PROVIDERS = {
                 ]
             }
         ]
+    },
+    human_voice: {
+        providers: [
+            {
+                id: 'audio-rtc',
+                name: 'Audio RTC',
+                models: [
+                    {
+                        id: 'default',
+                        name: 'Default',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.00099,
+                        notes: 'Audio RTC pricing'
+                    }
+                ]
+            }
+        ]
+    },
+    ains: {
+        providers: [
+            {
+                id: 'agora-ai-noise-suppression',
+                name: 'Agora AI Noise Suppression',
+                models: [
+                    {
+                        id: 'default',
+                        name: 'Default',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.00059,
+                        notes: 'AI Noise Suppression pricing'
+                    }
+                ]
+            }
+        ]
     }
 };
 
@@ -337,6 +397,23 @@ function App() {
     serviceCount: 0,
     providerCount: 0
   });
+
+  // Check if speech-to-speech provider is selected
+  const isSpeechToSpeechSelected = () => {
+    const llmProvider = selectedProviders.llm?.[0];
+    if (!llmProvider) return false;
+
+    const speechToSpeechProviders = ['openai-speech-to-speech', 'gemini-speech-to-speech'];
+    return speechToSpeechProviders.includes(llmProvider.id);
+  };
+
+  // Check if a service should be disabled
+  const isServiceDisabled = (serviceId) => {
+    if (serviceId === 'asr' || serviceId === 'tts') {
+      return isSpeechToSpeechSelected();
+    }
+    return false;
+  };
 
   const handleServiceClick = (serviceId) => {
     setSelectedService(serviceId);
@@ -460,6 +537,11 @@ function App() {
     let providerCount = 0;
 
     Object.entries(providers).forEach(([serviceId, selectedProviders]) => {
+      // Skip disabled services from calculations entirely
+      if (isServiceDisabled(serviceId)) {
+        return;
+      }
+
       if (selectedProviders.length > 0) {
         serviceCount++;
         providerCount += selectedProviders.length;
@@ -524,20 +606,30 @@ function App() {
       return model.name;
     }
 
+    // Special case for AINS - model name should just be "AINS"
+    if (serviceId === 'ains') {
+      return 'AINS';
+    }
+
     // If model name is "Default" or empty, generate name from provider and service
     const serviceDisplayName = serviceId.toUpperCase().replace('_', ' ');
     return `${provider.name} ${serviceDisplayName}`;
   };
 
   const getDisplayPrice = (price) => {
-    return price.toFixed(4);
+    // Format price to 5 decimal places for consistency
+    return price.toFixed(5);
   };
 
   const groupModelsIntoColumns = (models) => {
     const columns = [];
-    for (let i = 0; i < models.length; i += 2) {
-      columns.push(models.slice(i, i + 2));
+    const modelsPerColumn = 2;
+
+    // Distribute models evenly across columns
+    for (let i = 0; i < models.length; i += modelsPerColumn) {
+      columns.push(models.slice(i, i + modelsPerColumn));
     }
+
     return columns;
   };
 
@@ -560,18 +652,29 @@ function App() {
                 {/* Services selection */}
                 <div className="services-row">
                   <div className={`service-box ${selectedService === 'agent_session' ? 'selected' : ''}`} onClick={() => handleServiceClick('agent_session')}>
-                    Agent Session
+                    Agent Voice
+                  </div>
+                  <div className={`service-box ${selectedService === 'human_voice' ? 'selected' : ''}`} onClick={() => handleServiceClick('human_voice')}>
+                    Human Voice
+                  </div>
+                  <div className={`service-box ${selectedService === 'ains' ? 'selected' : ''}`} onClick={() => handleServiceClick('ains')}>
+                    AINS
                   </div>
                   <div
-                    className={`service-box ${selectedService === 'asr' ? 'selected' : ''}`}
-                    onClick={() => handleServiceClick('asr')}
+                    className={`service-box ${selectedService === 'asr' ? 'selected' : ''} ${isServiceDisabled('asr') ? 'disabled' : ''}`}
+                    onClick={() => !isServiceDisabled('asr') && handleServiceClick('asr')}
+                    title={isServiceDisabled('asr') ? "ASR is part of speech-to-speech models and is therefore disabled here" : undefined}
                   >
                     ASR
                   </div>
                   <div className={`service-box ${selectedService === 'llm' ? 'selected' : ''}`} onClick={() => handleServiceClick('llm')}>
                     LLM
                   </div>
-                  <div className={`service-box ${selectedService === 'tts' ? 'selected' : ''}`} onClick={() => handleServiceClick('tts')}>
+                  <div
+                    className={`service-box ${selectedService === 'tts' ? 'selected' : ''} ${isServiceDisabled('tts') ? 'disabled' : ''}`}
+                    onClick={() => !isServiceDisabled('tts') && handleServiceClick('tts')}
+                    title={isServiceDisabled('tts') ? "TTS is part of speech-to-speech models and is therefore disabled here" : undefined}
+                  >
                     TTS
                   </div>
                   <div className={`service-box ${selectedService === 'ai_avatar' ? 'selected' : ''}`} onClick={() => handleServiceClick('ai_avatar')}>
