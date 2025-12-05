@@ -2,6 +2,18 @@ import React, { useState, useEffect } from 'react'
 import PricingCalculator from './components/PricingCalculator'
 import './App.css'
 
+// Helper function to get characters per minute for TTS providers
+const getCharactersPerMinute = (providerId) => {
+  const mapping = {
+    'elevenlabs': 600,    // For $0.0900/min at $150 per 1M chars
+    'cartesia': 200,      // For $0.0300/min at $150 per 1M chars
+    'microsoft-azure-speech': 501,
+    'openai-tts': 501,
+    'hume-ai': 501
+  };
+  return mapping[providerId] || 501; // Default to 501 if not found
+};
+
 // Updated PROVIDERS data from CSV
 const PROVIDERS = {
     agent_session: {
@@ -275,7 +287,7 @@ const PROVIDERS = {
                         name: 'Default',
                         pricingUnit: 'per 1M chars',
                         unitPrice: 150,
-                        notes: 'Starter plan; $0.15 per 1K chars.'
+                        notes: '$0.0900/min based on 600 chars/min'
                     }
                 ]
             },
@@ -288,7 +300,7 @@ const PROVIDERS = {
                         name: 'Default',
                         pricingUnit: 'per 1M chars',
                         unitPrice: 150,
-                        notes: 'Starter plan; 1 char = 1 credit.'
+                        notes: '$0.0300/min based on 200 chars/min'
                     }
                 ]
             },
@@ -520,7 +532,7 @@ function App() {
         modelCost = inputCost + outputCost;
       } else if (model.pricingUnit?.includes('chars')) {
         // For TTS services (per character pricing)
-        const charactersPerMinute = 30082 / 60;
+        const charactersPerMinute = getCharactersPerMinute(provider.id);
         modelCost = (charactersPerMinute / 1000000) * model.unitPrice;
       }
 
@@ -553,11 +565,11 @@ function App() {
           if (selectedModelId) {
             const selectedModel = provider.models.find(m => m.id === selectedModelId);
             if (selectedModel) {
-              serviceTotal += calculateSingleModelPrice(selectedModel);
+              serviceTotal += calculateSingleModelPrice(selectedModel, provider.id);
             }
           } else {
             // If no model selected, use default (first model or sum based on your logic)
-            serviceTotal += calculateSingleModelPrice(provider.models[0]);
+            serviceTotal += calculateSingleModelPrice(provider.models[0], provider.id);
           }
         });
 
@@ -578,7 +590,7 @@ function App() {
     });
   };
 
-  const calculateSingleModelPrice = (model) => {
+  const calculateSingleModelPrice = (model, providerId) => {
     let price = 0;
 
     if (model.unitPrice && !model.pricingUnit?.includes('chars') && !model.inputPrice) {
@@ -593,7 +605,7 @@ function App() {
       price = inputCost + outputCost;
     } else if (model.pricingUnit?.includes('chars')) {
       // For TTS services (per character pricing)
-      const charactersPerMinute = 30082 / 60;
+      const charactersPerMinute = providerId ? getCharactersPerMinute(providerId) : (30082 / 60);
       price = (charactersPerMinute / 1000000) * model.unitPrice;
     }
 
@@ -709,7 +721,7 @@ function App() {
       );
     } else if (model.pricingUnit?.includes('chars')) {
       // Character-based TTS pricing
-      const charactersPerMinute = 30082 / 60; // ~501 chars/min
+      const charactersPerMinute = getCharactersPerMinute(provider.id);
       const costPerMinute = (charactersPerMinute / 1000000) * model.unitPrice;
 
       return (
@@ -899,7 +911,7 @@ function App() {
                                   <div className="model-radio-content">
                                     <div className="model-radio-name">{getDisplayName(selectedProviderForModels, model, selectedService)}</div>
                                     <div className="model-radio-price-container">
-                                      <div className="model-radio-price">${getDisplayPrice(calculateSingleModelPrice(model))}/minute</div>
+                                      <div className="model-radio-price">${getDisplayPrice(calculateSingleModelPrice(model, selectedProviderForModels?.id))}/minute</div>
                                       <div className="model-radio-unit">{model.pricingUnit}</div>
                                     </div>
                                   </div>

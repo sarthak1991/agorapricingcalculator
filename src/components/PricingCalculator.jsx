@@ -265,6 +265,7 @@ const PROVIDERS = {
             {
                 id: 'microsoft-azure-speech',
                 name: 'Microsoft Azure Speech Services',
+                charactersPerMinute: 501,
                 models: [
                     {
                         id: 'default',
@@ -278,32 +279,35 @@ const PROVIDERS = {
             {
                 id: 'elevenlabs',
                 name: 'ElevenLabs',
+                charactersPerMinute: 600,
                 models: [
                     {
                         id: 'default',
                         name: 'Default',
                         pricingUnit: 'per 1M chars',
                         unitPrice: 150,
-                        notes: 'Starter plan; $0.15 per 1K chars.'
+                        notes: '$0.0900/min based on 600 chars/min'
                     }
                 ]
             },
             {
                 id: 'cartesia',
                 name: 'Cartesia',
+                charactersPerMinute: 200,
                 models: [
                     {
                         id: 'default',
                         name: 'Default',
                         pricingUnit: 'per 1M chars',
                         unitPrice: 150,
-                        notes: 'Starter plan; 1 char = 1 credit.'
+                        notes: '$0.0300/min based on 200 chars/min'
                     }
                 ]
             },
             {
                 id: 'openai-tts',
                 name: 'OpenAI TTS',
+                charactersPerMinute: 501,
                 models: [
                     {
                         id: 'default',
@@ -317,6 +321,7 @@ const PROVIDERS = {
             {
                 id: 'hume-ai',
                 name: 'Hume AI (Octave)',
+                charactersPerMinute: 501,
                 models: [
                     {
                         id: 'default',
@@ -428,8 +433,9 @@ const PricingCalculator = () => {
         };
     };
 
-    const calculateTTSCharacters = () => {
-        const charactersPerMinute = 30082 / 60;
+    const calculateTTSCharacters = (providerId) => {
+        const provider = PROVIDERS.tts.providers.find(p => p.id === providerId);
+        const charactersPerMinute = provider?.charactersPerMinute || (30082 / 60);
         return Math.round(charactersPerMinute);
     };
 
@@ -485,7 +491,7 @@ const PricingCalculator = () => {
             const provider = PROVIDERS.tts.providers.find(p => p.id === formData.tts.provider);
             const model = provider?.models.find(m => m.id === formData.tts.model);
             if (model) {
-                const characters = calculateTTSCharacters();
+                const characters = calculateTTSCharacters(formData.tts.provider);
                 costs.tts = (characters / 1000000) * model.unitPrice;
             }
         }
