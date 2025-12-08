@@ -413,7 +413,7 @@ function App() {
 
   // Check if a service should be disabled
   const isServiceDisabled = (serviceId) => {
-    if (serviceId === 'asr' || serviceId === 'tts') {
+    if (serviceId === 'asr' || serviceId === 'tts' || serviceId === 'llm') {
       return isSpeechToSpeechSelected();
     }
     return false;
@@ -829,7 +829,11 @@ function App() {
                   >
                     ASR
                   </div>
-                  <div className={`service-box ${selectedService === 'llm' ? 'selected' : ''}`} onClick={() => handleServiceClick('llm')}>
+                  <div
+                    className={`service-box ${selectedService === 'llm' ? 'selected' : ''} ${isServiceDisabled('llm') ? 'disabled' : ''}`}
+                    onClick={() => !isServiceDisabled('llm') && handleServiceClick('llm')}
+                    title={isServiceDisabled('llm') ? "LLM is covered by speech-to-speech models and is therefore disabled here" : undefined}
+                  >
                     LLM
                   </div>
                   <div className={`service-box ${selectedService === 'mllm' ? 'selected' : ''}`} onClick={() => handleServiceClick('mllm')}>
