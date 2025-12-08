@@ -222,7 +222,11 @@ const PROVIDERS = {
                         notes: 'Most capable Claude model'
                     }
                 ]
-            },
+            }
+        ]
+    },
+    mllm: {
+        providers: [
             {
                 id: 'openai-speech-to-speech',
                 name: 'OpenAI speech to speech',
@@ -400,11 +404,11 @@ function App() {
 
   // Check if speech-to-speech provider is selected
   const isSpeechToSpeechSelected = () => {
-    const llmProvider = selectedProviders.llm?.[0];
-    if (!llmProvider) return false;
+    const mllmProvider = selectedProviders.mllm?.[0];
+    if (!mllmProvider) return false;
 
     const speechToSpeechProviders = ['openai-speech-to-speech', 'gemini-speech-to-speech'];
-    return speechToSpeechProviders.includes(llmProvider.id);
+    return speechToSpeechProviders.includes(mllmProvider.id);
   };
 
   // Check if a service should be disabled
@@ -828,6 +832,9 @@ function App() {
                   <div className={`service-box ${selectedService === 'llm' ? 'selected' : ''}`} onClick={() => handleServiceClick('llm')}>
                     LLM
                   </div>
+                  <div className={`service-box ${selectedService === 'mllm' ? 'selected' : ''}`} onClick={() => handleServiceClick('mllm')}>
+                    MLLM
+                  </div>
                   <div
                     className={`service-box ${selectedService === 'tts' ? 'selected' : ''} ${isServiceDisabled('tts') ? 'disabled' : ''}`}
                     onClick={() => !isServiceDisabled('tts') && handleServiceClick('tts')}
@@ -854,7 +861,7 @@ function App() {
                     >
                       <div className="provider-content">
                         <span className="provider-name">{provider.name}</span>
-                        {(selectedService === 'llm' || selectedService === 'tts') && (
+                        {(selectedService === 'llm' || selectedService === 'mllm' || selectedService === 'tts') && (
                           <>
                             <div
                               className="info-icon"
