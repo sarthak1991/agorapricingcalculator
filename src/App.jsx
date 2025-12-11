@@ -222,7 +222,11 @@ const PROVIDERS = {
                         notes: 'Most capable Claude model'
                     }
                 ]
-            },
+            }
+        ]
+    },
+    mllm: {
+        providers: [
             {
                 id: 'openai-speech-to-speech',
                 name: 'OpenAI speech to speech',
@@ -400,16 +404,16 @@ function App() {
 
   // Check if speech-to-speech provider is selected
   const isSpeechToSpeechSelected = () => {
-    const llmProvider = selectedProviders.llm?.[0];
-    if (!llmProvider) return false;
+    const mllmProvider = selectedProviders.mllm?.[0];
+    if (!mllmProvider) return false;
 
     const speechToSpeechProviders = ['openai-speech-to-speech', 'gemini-speech-to-speech'];
-    return speechToSpeechProviders.includes(llmProvider.id);
+    return speechToSpeechProviders.includes(mllmProvider.id);
   };
 
   // Check if a service should be disabled
   const isServiceDisabled = (serviceId) => {
-    if (serviceId === 'asr' || serviceId === 'tts') {
+    if (serviceId === 'asr' || serviceId === 'tts' || serviceId === 'llm') {
       return isSpeechToSpeechSelected();
     }
     return false;
@@ -825,8 +829,15 @@ function App() {
                   >
                     ASR
                   </div>
-                  <div className={`service-box ${selectedService === 'llm' ? 'selected' : ''}`} onClick={() => handleServiceClick('llm')}>
+                  <div
+                    className={`service-box ${selectedService === 'llm' ? 'selected' : ''} ${isServiceDisabled('llm') ? 'disabled' : ''}`}
+                    onClick={() => !isServiceDisabled('llm') && handleServiceClick('llm')}
+                    title={isServiceDisabled('llm') ? "LLM is covered by speech-to-speech models and is therefore disabled here" : undefined}
+                  >
                     LLM
+                  </div>
+                  <div className={`service-box ${selectedService === 'mllm' ? 'selected' : ''}`} onClick={() => handleServiceClick('mllm')}>
+                    MLLM
                   </div>
                   <div
                     className={`service-box ${selectedService === 'tts' ? 'selected' : ''} ${isServiceDisabled('tts') ? 'disabled' : ''}`}
@@ -854,7 +865,7 @@ function App() {
                     >
                       <div className="provider-content">
                         <span className="provider-name">{provider.name}</span>
-                        {(selectedService === 'llm' || selectedService === 'tts') && (
+                        {(selectedService === 'llm' || selectedService === 'mllm' || selectedService === 'tts') && (
                           <>
                             <div
                               className="info-icon"
