@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import PricingCalculator from './components/PricingCalculator'
 import './App.css'
+import AgoraLogo from "../public/agora-logo-nav.svg"
+import GetStartedIcon from "../public/Icon.svg"
 
 // Updated PROVIDERS data from CSV
 const PROVIDERS = {
@@ -798,6 +800,48 @@ function App() {
   return (
     <div className="App">
       <div className="flex-container">
+        <div className="row row-0">
+          <div className="div-label">row0</div>
+          <div className="nav-logo">
+            <div className="div-label">div7</div>
+            <img src={AgoraLogo} alt="Agora Logo" />
+          </div>
+          <div className="nav-navigation">
+            <div className="div-label">div8</div>
+            <div className="nav-link-item">
+              <div className="div-label">div10</div>
+              <a href="#" className="nav-link">Products</a>
+            </div>
+            <div className="nav-link-item">
+              <div className="div-label">div11</div>
+              <a href="#" className="nav-link">Use Cases</a>
+            </div>
+            <div className="nav-link-item">
+              <div className="div-label">div12</div>
+              <a href="#" className="nav-link">Developers</a>
+            </div>
+            <div className="nav-link-item">
+              <div className="div-label">div13</div>
+              <a href="#" className="nav-link">Company</a>
+            </div>
+            <div className="nav-link-item">
+              <div className="div-label">div14</div>
+              <a href="#" className="nav-link">Support</a>
+            </div>
+            <div className="nav-link-item">
+              <div className="div-label">div15</div>
+              <a href="#" className="nav-link">Pricing</a>
+            </div>
+          </div>
+          <div className="nav-rhs">
+            <div className="div-label">div9</div>
+            <button className="nav-talk-btn">Talk to us</button>
+            <button className="nav-get-started-btn">
+              <img src={GetStartedIcon} alt="Get Started" />
+              Get Started
+            </button>
+          </div>
+        </div>
         <div className="row row-1">
           <div className="div-label">row1</div>
           Estimate Your Costs
