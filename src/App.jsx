@@ -3,6 +3,8 @@ import PricingCalculator from './components/PricingCalculator'
 import './App.css'
 import AgoraLogo from "../public/agora-logo-nav.svg"
 import GetStartedIcon from "../public/Icon.svg"
+import HeroBG from "../public/herobg.png"
+
 
 // Updated PROVIDERS data from CSV
 const PROVIDERS = {
@@ -842,9 +844,12 @@ function App() {
             </button>
           </div>
         </div>
-        <div className="row row-1">
+        <div className="row row-1" style={{backgroundImage: `url(${HeroBG})`}}>
           <div className="div-label">row1</div>
-          Estimate Your Costs
+          <div className="div16">
+            <h1 className="hero-heading">ConvoAI Pricing Calculator</h1>
+            <p className="hero-subheading">See exactly what you'll pay.</p>
+          </div>
         </div>
         <div className="row row-2">
           <div className="div-label">row2</div>
