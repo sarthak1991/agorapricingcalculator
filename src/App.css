@@ -533,8 +533,8 @@ align-self: stretch;
 }
 
 .providers-row{
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   align-self: stretch;
 }
@@ -1070,7 +1070,7 @@ align-self: stretch;
 /* New model selection styles */
 .models-selection-display {
   width: 100%;
-  height: 200px;
+  height: auto;
   font-family: sans-serif;
   overflow: hidden;
   margin-top: 45px;
@@ -1281,7 +1281,7 @@ align-self: stretch;
 .section-heading {
   align-self: stretch;
   color: #FCF9F8;
-  font-family: Jokker;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
