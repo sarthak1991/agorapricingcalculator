@@ -77,6 +77,197 @@ const PROVIDERS = {
                         notes: 'Deepgram\'s advanced streaming model'
                     }
                 ]
+            },
+            {
+                id: 'openai-beta-asr',
+                name: 'OpenAI (Beta)',
+                models: [
+                    {
+                        id: 'whisper-legacy',
+                        name: 'Whisper (legacy / whisper-1)',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.006,
+                        notes: 'Standard transcription rate for the OpenAI Whisper ASR model'
+                    },
+                    {
+                        id: 'gpt-4o-transcribe',
+                        name: 'GPT-4o Transcribe',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.006,
+                        notes: 'Newer transcription model with improved accuracy'
+                    },
+                    {
+                        id: 'gpt-4o-transcribe-diarization',
+                        name: 'GPT-4o Transcribe with Diarization',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.006,
+                        notes: 'Includes speaker identification'
+                    },
+                    {
+                        id: 'gpt-4o-mini-transcribe',
+                        name: 'GPT-4o Mini Transcribe',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.003,
+                        notes: 'Lower-cost, budget-friendly ASR option'
+                    }
+                ]
+            },
+            {
+                id: 'amazon-transcribe-asr',
+                name: 'Amazon Transcribe',
+                models: [
+                    {
+                        id: 'standard-batch',
+                        name: 'Standard Batch',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.024,
+                        notes: 'Standard batch transcription pricing'
+                    },
+                    {
+                        id: 'standard-streaming',
+                        name: 'Standard Streaming',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.024,
+                        notes: 'Standard real-time streaming transcription'
+                    },
+                    {
+                        id: 'medical',
+                        name: 'Medical',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.075,
+                        notes: 'Medical dictation and conversation transcription'
+                    },
+                    {
+                        id: 'pii-redaction-batch',
+                        name: 'PII Redaction Batch',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.0264,
+                        notes: 'Batch transcription with PII redaction (10% surcharge)'
+                    },
+                    {
+                        id: 'pii-redaction-streaming',
+                        name: 'PII Redaction Streaming',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.0264,
+                        notes: 'Streaming transcription with PII redaction (10% surcharge)'
+                    },
+                    {
+                        id: 'clm-batch',
+                        name: 'CLM Batch',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.006,
+                        notes: 'Call analytics LM batch processing'
+                    },
+                    {
+                        id: 'clm-streaming',
+                        name: 'CLM Streaming',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.006,
+                        notes: 'Call analytics LM streaming'
+                    }
+                ]
+            },
+            {
+                id: 'assemblyai-asr',
+                name: 'AssemblyAI',
+                models: [
+                    {
+                        id: 'universal',
+                        name: 'Universal',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.0025,
+                        notes: 'General-purpose speech-to-text model'
+                    },
+                    {
+                        id: 'universal-streaming',
+                        name: 'Universal-Streaming',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.0025,
+                        notes: 'Real-time streaming transcription'
+                    },
+                    {
+                        id: 'universal-streaming-multilingual',
+                        name: 'Universal-Streaming Multilingual',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.0025,
+                        notes: 'Multilingual streaming transcription support'
+                    },
+                    {
+                        id: 'slam-1',
+                        name: 'Slam-1',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.0045,
+                        notes: 'SLAM audio language model'
+                    }
+                ]
+            },
+            {
+                id: 'google-cloud-asr',
+                name: 'Google Cloud',
+                models: [
+                    {
+                        id: 'v2-standard',
+                        name: 'V2 Standard',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.016,
+                        notes: 'Google Speech-to-Text V2 standard model'
+                    },
+                    {
+                        id: 'v2-dynamic-batch',
+                        name: 'V2 Dynamic Batch',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.003,
+                        notes: 'Dynamic batch processing with lower rates'
+                    },
+                    {
+                        id: 'v1-standard-with-logging',
+                        name: 'V1 Standard (with data logging)',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.016,
+                        notes: 'V1 standard model with data logging enabled'
+                    },
+                    {
+                        id: 'v1-standard-without-logging',
+                        name: 'V1 Standard (without data logging)',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.024,
+                        notes: 'V1 standard model without data logging'
+                    },
+                    {
+                        id: 'medical-dictation',
+                        name: 'Medical Dictation',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.078,
+                        notes: 'Medical dictation transcription'
+                    },
+                    {
+                        id: 'medical-conversation',
+                        name: 'Medical Conversation',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.078,
+                        notes: 'Medical conversation transcription'
+                    }
+                ]
+            },
+            {
+                id: 'speechmatics-asr',
+                name: 'Speechmatics',
+                models: [
+                    {
+                        id: 'standard-accuracy',
+                        name: 'Standard Accuracy',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.004,
+                        notes: 'Standard accuracy speech recognition'
+                    },
+                    {
+                        id: 'enhanced-accuracy',
+                        name: 'Enhanced Accuracy',
+                        pricingUnit: 'per min',
+                        unitPrice: 0.004,
+                        notes: 'Enhanced accuracy model for improved transcription'
+                    }
+                ]
             }
         ]
     },
@@ -257,6 +448,178 @@ const PROVIDERS = {
                         notes: 'Speech-to-speech via Gemini Live API'
                     }
                 ]
+            },
+            {
+                id: 'groq',
+                name: 'Groq',
+                models: [
+                    {
+                        id: 'llama-3.3-70b-versatile',
+                        name: 'Llama 3.3 70B Versatile',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.59,
+                        outputPrice: 0.79,
+                        notes: 'Meta Llama 3.3 70B on Groq'
+                    },
+                    {
+                        id: 'llama-3.1-70b-versatile',
+                        name: 'Llama 3.1 70B Versatile',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.59,
+                        outputPrice: 0.79,
+                        notes: 'Meta Llama 3.1 70B on Groq'
+                    },
+                    {
+                        id: 'llama-3-70b-versatile',
+                        name: 'Llama 3 70B Versatile',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.59,
+                        outputPrice: 0.79,
+                        notes: 'Meta Llama 3 70B on Groq'
+                    },
+                    {
+                        id: 'llama-3.3-8b-instant',
+                        name: 'Llama 3.3 8B Instant',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.05,
+                        outputPrice: 0.08,
+                        notes: 'Meta Llama 3.3 8B on Groq'
+                    },
+                    {
+                        id: 'llama-3.1-8b-instant',
+                        name: 'Llama 3.1 8B Instant',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.05,
+                        outputPrice: 0.08,
+                        notes: 'Meta Llama 3.1 8B on Groq'
+                    },
+                    {
+                        id: 'gemma2-9b-it',
+                        name: 'Gemma2 9B IT',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.20,
+                        outputPrice: 0.20,
+                        notes: 'Google Gemma2 9B on Groq'
+                    },
+                    {
+                        id: 'mixtral-8x7b-32768',
+                        name: 'Mixtral 8x7B-32768',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.24,
+                        outputPrice: 0.24,
+                        notes: 'Mistral AI Mixtral 8x7B on Groq'
+                    },
+                    {
+                        id: 'mistral-7b-instruct-v0.3',
+                        name: 'Mistral 7B Instruct v0.3',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.07,
+                        outputPrice: 0.07,
+                        notes: 'Mistral AI 7B Instruct on Groq'
+                    },
+                    {
+                        id: 'distil-whisper-large-v3-en',
+                        name: 'Distil Whisper Large v3 en',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.07,
+                        outputPrice: 0.07,
+                        notes: 'Distil Whisper ASR model'
+                    }
+                ]
+            },
+            {
+                id: 'amazon-bedrock',
+                name: 'Amazon Bedrock',
+                models: [
+                    {
+                        id: 'anthropic-claude-3.5-sonnet',
+                        name: 'Anthropic Claude 3.5 Sonnet',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 3,
+                        outputPrice: 15,
+                        notes: 'Via Amazon Bedrock'
+                    },
+                    {
+                        id: 'anthropic-claude-3-haiku',
+                        name: 'Anthropic Claude 3 Haiku',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.25,
+                        outputPrice: 1.25,
+                        notes: 'Via Amazon Bedrock'
+                    },
+                    {
+                        id: 'anthropic-claude-3-opus',
+                        name: 'Anthropic Claude 3 Opus',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 15,
+                        outputPrice: 75,
+                        notes: 'Via Amazon Bedrock'
+                    },
+                    {
+                        id: 'meta-llama-3.1-405b-instruct',
+                        name: 'Meta Llama 3.1 405B Instruct',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 2.80,
+                        outputPrice: 2.80,
+                        notes: 'Via Amazon Bedrock On-Demand'
+                    },
+                    {
+                        id: 'meta-llama-3.1-70b-instruct',
+                        name: 'Meta Llama 3.1 70B Instruct',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.99,
+                        outputPrice: 0.99,
+                        notes: 'Via Amazon Bedrock On-Demand'
+                    },
+                    {
+                        id: 'meta-llama-3.1-8b-instruct',
+                        name: 'Meta Llama 3.1 8B Instruct',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.30,
+                        outputPrice: 0.30,
+                        notes: 'Via Amazon Bedrock On-Demand'
+                    },
+                    {
+                        id: 'meta-llama-3-70b-instruct',
+                        name: 'Meta Llama 3 70B Instruct',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 2.65,
+                        outputPrice: 2.65,
+                        notes: 'Via Amazon Bedrock On-Demand'
+                    },
+                    {
+                        id: 'mistral-ai-mistral-large',
+                        name: 'Mistral AI Mistral Large',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 4.00,
+                        outputPrice: 12.00,
+                        notes: 'Via Amazon Bedrock (Latest: mistral.mistral-large-2407)'
+                    },
+                    {
+                        id: 'mistral-ai-mixtral-8x7b',
+                        name: 'Mistral AI Mixtral 8x7B',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.55,
+                        outputPrice: 0.55,
+                        notes: 'Via Amazon Bedrock On-Demand'
+                    },
+                    {
+                        id: 'mistral-ai-mistral-7b',
+                        name: 'Mistral AI Mistral 7B',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.15,
+                        outputPrice: 0.15,
+                        notes: 'Via Amazon Bedrock On-Demand'
+                    },
+                    {
+                        id: 'amazon-titan-text-premier',
+                        name: 'Amazon Titan Text Premier',
+                        pricingUnit: 'per 1M tokens',
+                        inputPrice: 0.30,
+                        outputPrice: 0.40,
+                        notes: 'Via Amazon Bedrock On-Demand'
+                    }
+                ]
             }
         ]
     },
@@ -324,6 +687,209 @@ const PROVIDERS = {
                         pricingUnit: 'per 1M chars',
                         unitPrice: 150,
                         notes: 'Starter plan; voice cloning & speech-to-speech available.'
+                    }
+                ]
+            },
+            {
+                id: 'amazon-polly-beta',
+                name: 'Amazon Polly (Beta)',
+                models: [
+                    {
+                        id: 'standard',
+                        name: 'Standard',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 4.00,
+                        notes: 'Standard TTS model'
+                    },
+                    {
+                        id: 'neural',
+                        name: 'Neural',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 16.00,
+                        notes: 'Neural TTS model'
+                    },
+                    {
+                        id: 'long-form',
+                        name: 'Long-Form',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 100.00,
+                        notes: 'Long-form TTS model'
+                    },
+                    {
+                        id: 'generative',
+                        name: 'Generative',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 30.00,
+                        notes: 'Generative TTS model'
+                    }
+                ]
+            },
+            {
+                id: 'fish-audio-beta',
+                name: 'Fish Audio (Beta)',
+                models: [
+                    {
+                        id: 'speech-1.5',
+                        name: 'speech-1.5',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 15.00,
+                        notes: 'Fish Audio speech-1.5 model'
+                    },
+                    {
+                        id: 'speech-1.6',
+                        name: 'speech-1.6',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 15.00,
+                        notes: 'Fish Audio speech-1.6 model'
+                    },
+                    {
+                        id: 's1',
+                        name: 's1',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 15.00,
+                        notes: 'Fish Audio s1 model'
+                    }
+                ]
+            },
+            {
+                id: 'google-beta',
+                name: 'Google (Beta)',
+                models: [
+                    {
+                        id: 'standard',
+                        name: 'Standard',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 4.00,
+                        notes: 'Standard TTS model'
+                    },
+                    {
+                        id: 'wavenet',
+                        name: 'WaveNet',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 4.00,
+                        notes: 'WaveNet TTS model'
+                    },
+                    {
+                        id: 'neural2',
+                        name: 'Neural2',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 16.00,
+                        notes: 'Neural2 TTS model'
+                    },
+                    {
+                        id: 'polyglot',
+                        name: 'Polyglot',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 16.00,
+                        notes: 'Polyglot TTS model'
+                    },
+                    {
+                        id: 'chirp-3-hd',
+                        name: 'Chirp 3: HD',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 30.00,
+                        notes: 'Chirp 3 HD TTS model'
+                    },
+                    {
+                        id: 'instant-custom-voice',
+                        name: 'Instant Custom Voice',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 60.00,
+                        notes: 'Instant Custom Voice TTS model'
+                    },
+                    {
+                        id: 'studio',
+                        name: 'Studio',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 160.00,
+                        notes: 'Studio TTS model'
+                    }
+                ]
+            },
+            {
+                id: 'groq-beta',
+                name: 'Groq (Beta)',
+                models: [
+                    {
+                        id: 'orpheus-english',
+                        name: 'Orpheus English',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 22.00,
+                        notes: 'Orpheus English TTS model'
+                    },
+                    {
+                        id: 'orpheus-arabic-saudi',
+                        name: 'Orpheus Arabic Saudi',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 40.00,
+                        notes: 'Orpheus Arabic Saudi TTS model'
+                    }
+                ]
+            },
+            {
+                id: 'playht-beta',
+                name: 'PlayHT (Beta)',
+                models: [
+                    {
+                        id: 'api-standard',
+                        name: 'API (Standard)',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 20.00,
+                        notes: 'Standard API TTS model'
+                    },
+                    {
+                        id: 'api-premium',
+                        name: 'API (Premium)',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 240.00,
+                        notes: 'Premium API TTS model'
+                    }
+                ]
+            },
+            {
+                id: 'rime-beta',
+                name: 'Rime (Beta)',
+                models: [
+                    {
+                        id: 'mist-starter',
+                        name: 'Mist (Starter)',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 30.00,
+                        notes: 'Mist Starter TTS model'
+                    },
+                    {
+                        id: 'mist-growth',
+                        name: 'Mist (Growth)',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 20.00,
+                        notes: 'Mist Growth TTS model'
+                    },
+                    {
+                        id: 'arcana-starter',
+                        name: 'Arcana (Starter)',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 40.00,
+                        notes: 'Arcana Starter TTS model'
+                    },
+                    {
+                        id: 'arcana-growth',
+                        name: 'Arcana (Growth)',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 30.00,
+                        notes: 'Arcana Growth TTS model'
+                    }
+                ]
+            },
+            {
+                id: 'sarvam-beta',
+                name: 'Sarvam (Beta)',
+                models: [
+                    {
+                        id: 'bulbul-v2',
+                        name: 'Bulbul v2',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 17.86,
+                        notes: 'Bulbul v2 TTS model'
                     }
                 ]
             }
