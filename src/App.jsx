@@ -845,10 +845,10 @@ function App() {
           </div>
         </div>
         <div className="row row-1" style={{backgroundImage: `url(${HeroBG})`}}>
-          <div className="div-label">row1</div>
+          {/* <div className="div-label">row1</div> */}
           <div className="div16">
-            <h1 className="hero-heading">ConvoAI Pricing Calculator</h1>
-            <p className="hero-subheading">See exactly what you'll pay.</p>
+            {/* <h1 className="hero-heading">ConvoAI Pricing Calculator</h1>
+            <p className="hero-subheading">See exactly what you'll pay.</p> */}
           </div>
         </div>
         <div className="row row-2">
@@ -913,6 +913,7 @@ function App() {
                       onClick={() => handleProviderClick(provider, selectedService)}
                     >
                       <div className="provider-content">
+                        <div className="provider-radio"></div>
                         <span className="provider-name">{provider.name}</span>
                         {(selectedService === 'llm' || selectedService === 'mllm' || selectedService === 'tts') && (
                           <>
