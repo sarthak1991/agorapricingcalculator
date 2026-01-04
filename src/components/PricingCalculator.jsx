@@ -689,6 +689,209 @@ const PROVIDERS = {
                         notes: 'Starter plan; voice cloning & speech-to-speech available.'
                     }
                 ]
+            },
+            {
+                id: 'amazon-polly-beta',
+                name: 'Amazon Polly (Beta)',
+                models: [
+                    {
+                        id: 'standard',
+                        name: 'Standard',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 4.00,
+                        notes: 'Standard TTS model'
+                    },
+                    {
+                        id: 'neural',
+                        name: 'Neural',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 16.00,
+                        notes: 'Neural TTS model'
+                    },
+                    {
+                        id: 'long-form',
+                        name: 'Long-Form',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 100.00,
+                        notes: 'Long-form TTS model'
+                    },
+                    {
+                        id: 'generative',
+                        name: 'Generative',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 30.00,
+                        notes: 'Generative TTS model'
+                    }
+                ]
+            },
+            {
+                id: 'fish-audio-beta',
+                name: 'Fish Audio (Beta)',
+                models: [
+                    {
+                        id: 'speech-1.5',
+                        name: 'speech-1.5',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 15.00,
+                        notes: 'Fish Audio speech-1.5 model'
+                    },
+                    {
+                        id: 'speech-1.6',
+                        name: 'speech-1.6',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 15.00,
+                        notes: 'Fish Audio speech-1.6 model'
+                    },
+                    {
+                        id: 's1',
+                        name: 's1',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 15.00,
+                        notes: 'Fish Audio s1 model'
+                    }
+                ]
+            },
+            {
+                id: 'google-beta',
+                name: 'Google (Beta)',
+                models: [
+                    {
+                        id: 'standard',
+                        name: 'Standard',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 4.00,
+                        notes: 'Standard TTS model'
+                    },
+                    {
+                        id: 'wavenet',
+                        name: 'WaveNet',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 4.00,
+                        notes: 'WaveNet TTS model'
+                    },
+                    {
+                        id: 'neural2',
+                        name: 'Neural2',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 16.00,
+                        notes: 'Neural2 TTS model'
+                    },
+                    {
+                        id: 'polyglot',
+                        name: 'Polyglot',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 16.00,
+                        notes: 'Polyglot TTS model'
+                    },
+                    {
+                        id: 'chirp-3-hd',
+                        name: 'Chirp 3: HD',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 30.00,
+                        notes: 'Chirp 3 HD TTS model'
+                    },
+                    {
+                        id: 'instant-custom-voice',
+                        name: 'Instant Custom Voice',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 60.00,
+                        notes: 'Instant Custom Voice TTS model'
+                    },
+                    {
+                        id: 'studio',
+                        name: 'Studio',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 160.00,
+                        notes: 'Studio TTS model'
+                    }
+                ]
+            },
+            {
+                id: 'groq-beta',
+                name: 'Groq (Beta)',
+                models: [
+                    {
+                        id: 'orpheus-english',
+                        name: 'Orpheus English',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 22.00,
+                        notes: 'Orpheus English TTS model'
+                    },
+                    {
+                        id: 'orpheus-arabic-saudi',
+                        name: 'Orpheus Arabic Saudi',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 40.00,
+                        notes: 'Orpheus Arabic Saudi TTS model'
+                    }
+                ]
+            },
+            {
+                id: 'playht-beta',
+                name: 'PlayHT (Beta)',
+                models: [
+                    {
+                        id: 'api-standard',
+                        name: 'API (Standard)',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 20.00,
+                        notes: 'Standard API TTS model'
+                    },
+                    {
+                        id: 'api-premium',
+                        name: 'API (Premium)',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 240.00,
+                        notes: 'Premium API TTS model'
+                    }
+                ]
+            },
+            {
+                id: 'rime-beta',
+                name: 'Rime (Beta)',
+                models: [
+                    {
+                        id: 'mist-starter',
+                        name: 'Mist (Starter)',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 30.00,
+                        notes: 'Mist Starter TTS model'
+                    },
+                    {
+                        id: 'mist-growth',
+                        name: 'Mist (Growth)',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 20.00,
+                        notes: 'Mist Growth TTS model'
+                    },
+                    {
+                        id: 'arcana-starter',
+                        name: 'Arcana (Starter)',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 40.00,
+                        notes: 'Arcana Starter TTS model'
+                    },
+                    {
+                        id: 'arcana-growth',
+                        name: 'Arcana (Growth)',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 30.00,
+                        notes: 'Arcana Growth TTS model'
+                    }
+                ]
+            },
+            {
+                id: 'sarvam-beta',
+                name: 'Sarvam (Beta)',
+                models: [
+                    {
+                        id: 'bulbul-v2',
+                        name: 'Bulbul v2',
+                        pricingUnit: 'per 1M chars',
+                        unitPrice: 17.86,
+                        notes: 'Bulbul v2 TTS model'
+                    }
+                ]
             }
         ]
     },
