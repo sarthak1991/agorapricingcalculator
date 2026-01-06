@@ -1205,11 +1205,17 @@ function App() {
 
   const groupModelsIntoColumns = (models) => {
     const columns = [];
-    const modelsPerColumn = 2;
 
-    // Distribute models evenly across columns
-    for (let i = 0; i < models.length; i += modelsPerColumn) {
-      columns.push(models.slice(i, i + modelsPerColumn));
+    // When there are only 2 models, put 1 model per column to display side-by-side
+    if (models.length === 2) {
+      columns.push([models[0]]);
+      columns.push([models[1]]);
+    } else {
+      // For other cases, distribute models with 2 models per column
+      const modelsPerColumn = 2;
+      for (let i = 0; i < models.length; i += modelsPerColumn) {
+        columns.push(models.slice(i, i + modelsPerColumn));
+      }
     }
 
     return columns;
