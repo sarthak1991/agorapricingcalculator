@@ -1565,35 +1565,6 @@ function App() {
                   ) : (
                     <div className="no-models-selected">
                       <div className="no-models-text">Select a provider to view models</div>
-                      <div className="no-models-hint">Click on a selected provider below to see their available models</div>
-
-                      {/* Show selected providers for clicking */}
-                      {Object.values(selectedProviders).flat().length > 0 && (
-                        <div className="selected-providers-list">
-                          <div className="selected-providers-title">Selected Providers:</div>
-                          <div className="selected-providers-grid">
-                            {Object.entries(selectedProviders).map(([serviceId, providers]) => (
-                              providers.map((provider) => {
-                                const selectedModelId = selectedModels[serviceId];
-                                const selectedModel = provider.models.find(m => m.id === selectedModelId);
-                                return (
-                                  <div
-                                    key={provider.id}
-                                    className="selected-provider-item"
-                                    onClick={() => handleProviderForModelsClick(provider)}
-                                  >
-                                    {provider.name}
-                                    <div className="provider-service">{serviceId.toUpperCase().replace('_', ' ')}</div>
-                                    {selectedModel && (
-                                      <div className="provider-model">{getDisplayName(provider, selectedModel, serviceId)}</div>
-                                    )}
-                                  </div>
-                                );
-                              })
-                            ))}
-                          </div>
-                        </div>
-                      )}
                     </div>
                   )}
                 </div>
