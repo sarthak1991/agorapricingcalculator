@@ -391,8 +391,12 @@
 }
 
 .service-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
   flex: 1;
-  overflow: hidden;
+  padding-right: 4px;
 }
 
 .breakdown-header {
@@ -404,29 +408,22 @@
   letter-spacing: 0.5px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   padding-bottom: 8px;
-  grid-column: 1 / -1;
-}
-
-.service-breakdown {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  overflow: hidden;
 }
 
 .service-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 10px 12px;
   background-color: rgba(255, 255, 255, 0.05);
   border-radius: 6px;
   border-left: 3px solid #ff0000;
   width: 100%;
   min-height: 50px;
-  max-height: 50px;
-  height: 50px;
+  height: auto;
   margin-bottom: 0;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .service-item.agent_session {
@@ -452,6 +449,9 @@
 .service-info {
   flex: 1;
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .service-name {
@@ -459,12 +459,14 @@
   font-weight: 600;
   color: #ffffff;
   margin-bottom: 2px;
+  white-space: nowrap;
 }
 
 .service-providers {
   font-size: 10px;
   color: #ffe4e1;
   opacity: 0.8;
+  white-space: nowrap;
 }
 
 .service-total {
@@ -472,6 +474,8 @@
   font-weight: bold;
   color: #ffffff;
   text-align: right;
+  flex-shrink: 0;
+  min-width: 80px;
 }
 
 .no-selections {

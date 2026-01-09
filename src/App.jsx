@@ -998,6 +998,18 @@ function App() {
   };
 
   const handleServiceClick = (serviceId) => {
+    // When switching to a different service
+    if (serviceId !== selectedService) {
+      // Check if this service already has a selected provider
+      const existingProvider = selectedProviders[serviceId]?.[0];
+      if (existingProvider) {
+        // If there's a selected provider, auto-open it to show models
+        setSelectedProviderForModels(existingProvider);
+      } else {
+        // If no provider selected yet, clear the model view
+        setSelectedProviderForModels(null);
+      }
+    }
     setSelectedService(serviceId);
   };
 
