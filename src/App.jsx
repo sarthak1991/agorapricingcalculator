@@ -925,7 +925,7 @@ const PROVIDERS = {
                         id: 'default',
                         name: 'Default',
                         pricingUnit: 'per minute',
-                        unitPrice: 0.1000,
+                        unitPrice: 0.12000,
                         notes: '$6 for 60 minutes (updated pricing)'
                     }
                 ]
@@ -1585,13 +1585,9 @@ function App() {
 
                     <div className="selection-summary">
                       <div className="summary-stats">
-                        <div className="stat-item">
+                        <div className="stat-item" style={{width: '100%'}}>
                           <div className="stat-number">{totalPricing.serviceCount}</div>
                           <div className="stat-label">Services</div>
-                        </div>
-                        <div className="stat-item">
-                          <div className="stat-number">{totalPricing.providerCount}</div>
-                          <div className="stat-label">Providers</div>
                         </div>
                       </div>
                     </div>
